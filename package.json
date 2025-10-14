@@ -1,21 +1,21 @@
 {
-    "name": "scrubjay",
-    "private": true,
-    "scripts": {
-        "dev": "turbo run dev",
-        "build": "turbo run build",
-        "lint": "turbo run lint",
-        "check-types": "turbo run check-types"
-    },
-    "workspaces": [
-        "apps/*",
-        "packages/*"
-    ],
-    "devDependencies": {
-        "turbo": "^2.3.0"
-    },
-    "packageManager": "npm@10.9.0",
-    "dependencies": {
-        "@changesets/cli": "^2.27.11"
-    }
+  "name": "scrubjay",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "check-types": "turbo run check-types"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.3.0"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "dependencies": {
+    "@changesets/cli": "^2.27.11"
+  }
 }
