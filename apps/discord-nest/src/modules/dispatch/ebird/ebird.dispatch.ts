@@ -8,7 +8,6 @@ import {
   filteredSpecies,
   deliveries,
 } from "@/core/drizzle/drizzle.schema";
-import { DiscordService } from "../../../core/discord/discord.service";
 import { GroupedObservation } from "../types";
 
 @Injectable()
@@ -16,7 +15,6 @@ export class EBirdDispatchService {
   private readonly logger = new Logger(EBirdDispatchService.name);
   constructor(
     private readonly db: DrizzleService,
-    private readonly discordService: DiscordService
   ) {}
 
   async dispatch(): Promise<Map<string, GroupedObservation[]>> {
@@ -177,49 +175,6 @@ export class EBirdDispatchService {
       this.logger.error(
         `Error recording deliveries for channel ${channelId}: ${error}`
       );
-      throw error;
-    }
-  }
-
-  async dispatchAndSend(): Promise<void> {
-    try {
-      // Check if Discord service is ready
-      if (!(await this.discordService.isReady())) {
-        this.logger.warn('Discord service is not ready, skipping dispatch');
-        return;
-      }
-
-      // Get all observations that need to be dispatched
-      const observationsByChannel = await this.dispatch();
-
-      if (observationsByChannel.size === 0) {
-        this.logger.log('No observations to dispatch');
-        return;
-      }
-
-      this.logger.log(`Dispatching observations to ${observationsByChannel.size} channels`);
-
-      // Send observations to each channel
-      for (const [channelId, observations] of observationsByChannel) {
-        try {
-          this.logger.log(`Sending ${observations.length} observations to channel ${channelId}`);
-          
-          // Send all observations to the channel
-          await this.discordService.sendObservationsToChannel(channelId, observations);
-          
-          // Record successful deliveries
-          await this.recordDeliveries(channelId, observations);
-          
-          this.logger.log(`Successfully dispatched ${observations.length} observations to channel ${channelId}`);
-        } catch (error) {
-          this.logger.error(`Failed to dispatch to channel ${channelId}: ${error}`);
-          // Continue with other channels even if one fails
-        }
-      }
-
-      this.logger.log('Dispatch completed');
-    } catch (error) {
-      this.logger.error(`Error in dispatch and send: ${error}`);
       throw error;
     }
   }

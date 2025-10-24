@@ -162,6 +162,7 @@ export class EBirdIngestionService {
         this.groupObservationsForInsert(rawObservations);
 
       await this.upsertObservations(groupedObservations);
+      
     } catch (error) {
       this.logger.error(
         `Error ingesting eBird data for source ${source.id}: ${error}`
