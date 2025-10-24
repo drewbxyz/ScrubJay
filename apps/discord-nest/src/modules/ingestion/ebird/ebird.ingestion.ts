@@ -1,4 +1,4 @@
-import { DatabaseService } from "@/core/drizzle/drizzle.service";
+import { DrizzleService } from "@/core/drizzle/drizzle.service";
 import { Injectable, Logger } from "@nestjs/common";
 import { EBirdSource } from "../../sources/sources.schema";
 import {
@@ -20,7 +20,7 @@ headers.set("X-eBirdApiToken", process.env.EBIRD_TOKEN!);
 @Injectable()
 export class EBirdIngestionService {
   private readonly logger = new Logger(EBirdIngestionService.name);
-  constructor(private readonly db: DatabaseService) {}
+  constructor(private readonly db: DrizzleService) {}
 
   private async fetchObservations(regionCode: string) {
     const url = new URL(

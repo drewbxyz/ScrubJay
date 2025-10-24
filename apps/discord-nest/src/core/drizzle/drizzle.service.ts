@@ -4,11 +4,15 @@ import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class DatabaseService {
+export class DrizzleService {
   private readonly db : NodePgDatabase<typeof schema>;
 
   constructor(configService: ConfigService) {
-    this.db = drizzle(configService.get('DATABASE_URL'), { schema });
+    const dbUrl = configService.get('DATABASE_URL');
+    if (!dbUrl) {
+      throw new Error('DATABASE_URL is not set');
+    }
+    this.db = drizzle(dbUrl, { schema });
   }
   
   get query() {

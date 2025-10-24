@@ -1,4 +1,4 @@
-import { DatabaseService } from "@/core/drizzle/drizzle.service";
+import { DrizzleService } from "@/core/drizzle/drizzle.service";
 import { Injectable, Logger } from "@nestjs/common";
 import { and, eq, exists, gte, not, or, sql } from "drizzle-orm";
 import {
@@ -15,7 +15,7 @@ import { GroupedObservation } from "../types";
 export class EBirdDispatchService {
   private readonly logger = new Logger(EBirdDispatchService.name);
   constructor(
-    private readonly db: DatabaseService,
+    private readonly db: DrizzleService,
     private readonly discordService: DiscordService
   ) {}
 
