@@ -30,4 +30,8 @@ export class DatabaseService {
   get delete() {
     return this.db.delete;
   }
+
+  get transaction() {
+    return this.db.transaction;
+  }
 }
