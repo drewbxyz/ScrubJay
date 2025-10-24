@@ -1,26 +1,47 @@
 import { DatabaseService } from "@/core/database/database.service";
-import { sources, ebirdSources } from "@/core/database/schema";
-import { eq, and } from "drizzle-orm";
+import { SourceType, ebirdSources, sources } from "@/core/database/schema";
 import { Injectable, Logger } from "@nestjs/common";
-import { 
-    Source, 
-    EBirdSourceData,
-    SourceType,
-} from "./sources.schema";
+import { and, eq } from "drizzle-orm";
+import { EBirdSource, Source } from "./sources.schema";
 
 @Injectable()
 export class SourcesService {
+  private readonly logger = new Logger(SourcesService.name);
 
-    private readonly logger = new Logger(SourcesService.name);
+  constructor(private readonly db: DatabaseService) {}
 
-    constructor(private readonly db: DatabaseService) {}
-
-    async findActiveByType(type: typeof SourceType[number]): Promise<Source[]> {
-        const baseSources = await this.db.query.sources.findMany({
-            where: and(eq(sources.type, type), eq(sources.active, true)),
-        });
-
-        return baseSources.map(baseSource => {
-
+  private async getActiveEBirdSources(): Promise<EBirdSource[]> {
+    try {
+    return this.db
+      .select({
+        id: sources.id,
+        type: sources.type,
+        fetchIntervalMin: sources.fetchIntervalMin,
+        active: sources.active,
+        createdAt: sources.createdAt,
+        updatedAt: sources.updatedAt,
+        config: {
+          regionName: ebirdSources.regionName,
+          regionCode: ebirdSources.regionCode,
+        }
+      })
+      .from(sources)
+      .innerJoin(ebirdSources, eq(sources.id, ebirdSources.sourceId))
+      .where(and(eq(sources.type, "EBIRD"), eq(sources.active, true)));
+    } catch (error) {
+      this.logger.error(`Error getting active eBird sources: ${error}`);
+      throw error;
     }
+  }
+
+  async getActiveSourcesByType(
+    type: (typeof SourceType)[number]
+  ): Promise<Source[]> {
+    switch (type) {
+      case "EBIRD":
+        return this.getActiveEBirdSources();
+      default:
+        throw new Error(`Unsupported source type: ${type}`);
+    }
+  }
 }

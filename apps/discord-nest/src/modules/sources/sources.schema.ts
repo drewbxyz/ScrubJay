@@ -12,31 +12,15 @@ export interface BaseSource {
     updatedAt: Date;
 }
 
-// RSS source specific data
-export interface RssSourceData {
-    url: string;
-    format: 'rss' | 'atom' | 'unknown';
-    etag?: string;
-    lastModified?: string;
-}
-
 // eBird source specific data
 export interface EBirdSourceData {
     regionName: string;
     regionCode: string;
 }
 
-// Email source specific data
-export interface EmailSourceData {
-    imapHost: string;
-    imapPort: number;
-    username: string;
-    password: string;
-}
-
 export interface EBirdSource extends BaseSource {
     type: 'EBIRD';
-    data: EBirdSourceData;
+    config: EBirdSourceData;
 }
 
 // Union type for all sources
@@ -51,11 +35,4 @@ export function isEBirdSource(source: Source): source is EBirdSource {
 export const EBirdSourceDataSchema = z.object({
     regionName: z.string().min(1),
     regionCode: z.string().min(1),
-});
-
-export const EmailSourceDataSchema = z.object({
-    imapHost: z.string().min(1),
-    imapPort: z.number().int().positive(),
-    username: z.string().min(1),
-    password: z.string().min(1),
 });
