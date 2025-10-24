@@ -68,21 +68,21 @@ export const observations = pgTable(
   ]
 );
 
-export const channelSubscriptions = pgTable(
-  'channel_subscription',
+export const channelEBirdSubscriptions = pgTable(
+  'channel_ebird_subscription',
   {
     channelId: text('channel_id').notNull(),
-    countyCode: text('county_code').notNull(),
     stateCode: text('state_code').notNull(),
+    countyCode: text('county_code'), // NULL means subscribe to all counties in state
     active: boolean('active').notNull().default(true),
     lastUpdated: timestamp('last_updated')
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
   },
   (t) => [
-    primaryKey({ columns: [t.channelId, t.countyCode, t.stateCode] }),
-    index('county_state_idx').on(t.countyCode, t.stateCode),
-    index('active_state_idx').on(t.active, t.stateCode),
+    primaryKey({ columns: [t.channelId, t.stateCode, t.countyCode] }),
+    index('state_county_idx').on(t.stateCode, t.countyCode),
+    index('active_state_county_idx').on(t.active, t.stateCode, t.countyCode),
   ]
 );
 
@@ -109,22 +109,14 @@ export const countyTimezones = pgTable(
   (t) => [index('county_code_idx').on(t.countyCode)]
 );
 
-export const SourceType = ['RSS', 'EBIRD', 'EMAIL'] as const;
-export const FeedFormat = ['rss', 'atom', 'unknown'] as const;
+export const SourceType = ['EBIRD'] as const;
 
-
-
-// --- Sources: one per RSS/Atom feed (or eBird region, or mailbox) ---
+// --- Base source table with common fields ---
 export const sources = pgTable(
   'source',
   {
     id: text('id').primaryKey(), // e.g. "sandiegoregionbirding"
-    type: text('type', { enum: SourceType }).notNull().default('RSS'),
-    url: text('url'), // For RSS/Atom
-    format: text('format', { enum: FeedFormat }).notNull().default('unknown'),
-    config: jsonb('config'), // Optional JSON config (e.g., email params)
-    etag: text('etag'),
-    lastModified: text('last_modified'),
+    type: text('type', { enum: SourceType }).notNull(),
     fetchIntervalMin: integer('fetch_interval_min').notNull().default(20),
     active: boolean('active').notNull().default(true),
     createdAt: timestamp('created_at')
@@ -137,33 +129,17 @@ export const sources = pgTable(
   (t) => [index('source_type_active_idx').on(t.type, t.active)]
 );
 
-// --- Source Items: entries (RSS/Atom posts, emails, etc.) ---
-// export const sourceItems = pgTable(
-//   'source_item',
-//   {
-//     id: text('id').primaryKey(),
-//     sourceId: text('source_id')
-//       .notNull()
-//       .references(() => sources.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-//     guid: text('guid'),
-//     canonicalLink: text('canonical_link').notNull(),
-//     title: text('title'),
-//     author: text('author'),
-//     summary: text('summary'),
-//     publishedAt: timestamp('published_at'),
-//     mediaUrl: text('media_url'),
-//     contentHash: text('content_hash'),
-//     rawJson: text('raw_json'),
-//     fetchedAt: timestamp('fetched_at')
-//       .notNull()
-//       .default(sql`CURRENT_TIMESTAMP`),
-//   },
-//   (t) => [
-//     index('source_items_sourceid_published_idx').on(t.sourceId, t.publishedAt),
-//     index('source_items_guid_idx').on(t.guid),
-//     index('source_items_canonical_idx').on(t.canonicalLink),
-//   ]
-// );
+// --- eBird source specific fields ---
+export const ebirdSources = pgTable(
+  'ebird_source',
+  {
+    sourceId: text('source_id')
+      .primaryKey()
+      .references(() => sources.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
+    regionName: text('region_name').notNull(),
+    regionCode: text('region_code').notNull(),
+  }
+);
 
 export const deliveries = pgTable(
   'delivery',
@@ -179,26 +155,5 @@ export const deliveries = pgTable(
   (t) => [
     primaryKey({ columns: [t.kind, t.itemKey, t.channelId] }),
     index('delivery_channel_kind_idx').on(t.channelId, t.kind),
-  ]
-);
-
-export const channelSourceSubscriptions = pgTable(
-  'channel_source_subscription',
-  {
-    channelId: text('channel_id').notNull(),
-    sourceId: text('source_id')
-      .notNull()
-      .references(() => sources.id, { onDelete: 'cascade', onUpdate: 'cascade' }),
-    active: boolean('active').notNull().default(true),
-    createdAt: timestamp('created_at')
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-    lastUpdated: timestamp('last_updated')
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-  },
-  (t) => [
-    primaryKey({ columns: [t.channelId, t.sourceId] }),
-    index('channel_source_active_idx').on(t.channelId, t.active),
   ]
 );
