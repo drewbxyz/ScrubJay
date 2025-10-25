@@ -1,18 +1,20 @@
-import { DrizzleService } from "@/core/drizzle/drizzle.service";
 import { SourceType, ebirdSources, sources } from "@/core/drizzle/drizzle.schema";
 import { Injectable, Logger } from "@nestjs/common";
 import { and, eq } from "drizzle-orm";
 import { EBirdSource, Source } from "./sources.schema";
+import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 @Injectable()
 export class SourcesService {
   private readonly logger = new Logger(SourcesService.name);
 
-  constructor(private readonly db: DrizzleService) {}
+  constructor(
+    private readonly drizzle: DrizzleService
+  ) {}
 
   private async getActiveEBirdSources(): Promise<EBirdSource[]> {
     try {
-    return this.db
+    return await this.drizzle.db
       .select({
         id: sources.id,
         type: sources.type,

@@ -14,13 +14,13 @@ import { GroupedObservation } from "../types";
 export class EBirdDispatchService {
   private readonly logger = new Logger(EBirdDispatchService.name);
   constructor(
-    private readonly db: DrizzleService,
+    private readonly drizzle: DrizzleService,
   ) {}
 
   async dispatch(): Promise<Map<string, GroupedObservation[]>> {
     try {
       // Get recent observations that haven't been delivered yet
-      const recentObservationsWithChannels = await this.db
+      const recentObservationsWithChannels = await this.drizzle.db
         .select({
           channelId: channelEBirdSubscriptions.channelId,
           speciesCode: observations.speciesCode,
@@ -54,7 +54,7 @@ export class EBirdDispatchService {
           and(
             not(
               exists(
-                this.db
+                this.drizzle.db
                   .select()
                   .from(deliveries)
                   .where(
@@ -68,7 +68,7 @@ export class EBirdDispatchService {
             ),
             not(
               exists(
-                this.db
+                this.drizzle.db
                   .select()
                   .from(filteredSpecies)
                   .where(
@@ -89,7 +89,7 @@ export class EBirdDispatchService {
 
       // Get confirmed species from last week
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      const confirmedSpecies = await this.db
+      const confirmedSpecies = await this.drizzle.db
         .select({
           speciesCode: observations.speciesCode,
           locId: observations.locId,
@@ -166,7 +166,7 @@ export class EBirdDispatchService {
       }));
 
       if (deliveryRecords.length > 0) {
-        await this.db
+        await this.drizzle.db
           .insert(deliveries)
           .values(deliveryRecords)
           .onConflictDoNothing();

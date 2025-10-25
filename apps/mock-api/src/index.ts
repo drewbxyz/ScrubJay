@@ -12,6 +12,22 @@ const PORT = 8080;
 const observations: Record<string, eBirdObservation[]> = {};
 const apiKeys = new Set(["test-api-key", "dev-key-123"]); // Simple API key storage
 
+// Pool of existing locations for reuse
+const locationPool: Record<string, { locId: string; locName: string; lat: number; lng: number }[]> = {};
+
+// Initialize location pools from hotspots data
+Object.keys(hotspots).forEach(regionCode => {
+  const regionHotspots = hotspots[regionCode as keyof typeof hotspots];
+  if (regionHotspots) {
+    locationPool[regionCode] = regionHotspots.map(hotspot => ({
+      locId: hotspot.locId,
+      locName: hotspot.locName,
+      lat: hotspot.lat,
+      lng: hotspot.lng
+    }));
+  }
+});
+
 export interface eBirdObservation {
   speciesCode: string;
   comName: string;
@@ -51,6 +67,8 @@ const rateLimits: Record<string, { count: number; resetTime: number }> = {};
 // Middleware for API key authentication
 const authenticateApiKey = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const apiKey = req.headers['x-ebirdapikey'] as string;
+
+  console.log('apiKey', apiKey);
   
   if (!apiKey) {
     return res.status(401).json({ error: "API key required" });
@@ -93,12 +111,36 @@ function generateRandomObservation(regionCode: string, hotspot?: { locId: string
     throw new Error("Unable to generate observation data");
   }
   
-  const hotspotData = hotspot || {
-    locId: crypto.randomUUID(),
-    locName: "Random Location",
-    lat: 37.7749 + (Math.random() - 0.5) * 0.1,
-    lng: -122.4194 + (Math.random() - 0.5) * 0.1,
-  };
+  let hotspotData: { locId: string; locName: string; lat: number; lng: number };
+  
+  if (hotspot) {
+    // Use provided hotspot
+    hotspotData = hotspot;
+  } else {
+    // 80% chance to reuse existing location, 20% chance to create new one
+    const shouldReuseLocation = Math.random() < 0.8;
+    const availableLocations = locationPool[regionCode] || [];
+    
+    if (shouldReuseLocation && availableLocations.length > 0) {
+      // Reuse existing location
+      const randomLocation = availableLocations[Math.floor(Math.random() * availableLocations.length)];
+      hotspotData = randomLocation!; // We know it exists because we checked length > 0
+    } else {
+      // Create new location and add to pool
+      hotspotData = {
+        locId: crypto.randomUUID(),
+        locName: `Random Location ${Math.floor(Math.random() * 1000)}`,
+        lat: 37.7749 + (Math.random() - 0.5) * 0.1,
+        lng: -122.4194 + (Math.random() - 0.5) * 0.1,
+      };
+      
+      // Add new location to pool for future reuse
+      if (!locationPool[regionCode]) {
+        locationPool[regionCode] = [];
+      }
+      locationPool[regionCode].push(hotspotData);
+    }
+  }
 
   const obsDt = moment().subtract(Math.floor(Math.random() * 30), 'days').format('YYYY-MM-DD HH:mm:ss');
   
@@ -350,7 +392,11 @@ app.get("/v2/data/obs/geo/recent", (req, res) => {
   const geoObservations: eBirdObservation[] = [];
   
   for (let i = 0; i < Math.min(maxResultsNum, 20); i++) {
-    const obs = generateRandomObservation("US-CA");
+    // Use a default region or try to determine from coordinates
+    const regionCode = "US-CA"; // Default to California for now
+    const obs = generateRandomObservation(regionCode);
+    
+    // Adjust coordinates to be near the requested location
     obs.lat = parseFloat(lat as string) + (Math.random() - 0.5) * 0.1;
     obs.lng = parseFloat(lng as string) + (Math.random() - 0.5) * 0.1;
     
@@ -377,7 +423,11 @@ app.get("/v2/data/obs/geo/recent/notable", (req, res) => {
   const geoNotableObservations: eBirdObservation[] = [];
   
   for (let i = 0; i < Math.min(maxResultsNum, 10); i++) {
-    const obs = generateRandomObservation("US-CA");
+    // Use a default region or try to determine from coordinates
+    const regionCode = "US-CA"; // Default to California for now
+    const obs = generateRandomObservation(regionCode);
+    
+    // Adjust coordinates to be near the requested location
     obs.lat = parseFloat(lat as string) + (Math.random() - 0.5) * 0.1;
     obs.lng = parseFloat(lng as string) + (Math.random() - 0.5) * 0.1;
     obs.obsReviewed = true;

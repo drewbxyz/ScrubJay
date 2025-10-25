@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=scrubjay
+      - POSTGRES_PASSWORD=scrubjay
+      - POSTGRES_DB=scrubjay
+    networks:
+      - scrubjay
+    volumes:
+      - scrubjay-db:/var/lib/postgresql/data
+
+networks:
+  scrubjay:
+
+volumes:
+  scrubjay-db:

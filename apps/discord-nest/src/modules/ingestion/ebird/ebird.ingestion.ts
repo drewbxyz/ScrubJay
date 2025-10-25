@@ -8,26 +8,25 @@ import {
 } from "./ebird.schema";
 import { observations, locations } from "@/core/drizzle/drizzle.schema";
 import { sql } from "drizzle-orm";
+import { ConfigService } from "@nestjs/config";
 
 const queryParams = new URLSearchParams({
   detail: "full",
   back: "7",
 });
 
-const headers = new Headers();
-headers.set("X-eBirdApiToken", process.env.EBIRD_TOKEN!);
 
 @Injectable()
 export class EBirdIngestionService {
   private readonly logger = new Logger(EBirdIngestionService.name);
-  constructor(private readonly db: DrizzleService) {}
+  constructor(private readonly drizzle: DrizzleService, private readonly configService: ConfigService) {}
 
   private async fetchObservations(regionCode: string) {
     const url = new URL(
       `/v2/data/obs/${regionCode}/recent/notable?${queryParams.toString()}`,
       process.env.EBIRD_BASE_URL
     );
-    const response = await fetch(url.toString(), { headers });
+    const response = await fetch(url.toString(), { headers: { 'X-eBirdApiKey': this.configService.get('EBIRD_TOKEN')! } });
     if (!response.ok) {
       throw new Error(`Failed to fetch observations: ${response.statusText}`);
     }
@@ -84,7 +83,7 @@ export class EBirdIngestionService {
     const batchSize = 100;
     for (let i = 0; i < locationsToUpsert.length; i += batchSize) {
       const batch = locationsToUpsert.slice(i, i + batchSize);
-      await this.db
+      await this.drizzle.db
         .insert(locations)
         .values(batch)
         .onConflictDoUpdate({
@@ -126,7 +125,7 @@ export class EBirdIngestionService {
     const batchSize = 100;
     for (let i = 0; i < obsToUpsert.length; i += batchSize) {
       const batch = obsToUpsert.slice(i, i + batchSize);
-      await this.db
+      await this.drizzle.db
         .insert(observations)
         .values(batch)
         .onConflictDoUpdate({

@@ -13,7 +13,7 @@ export class EBirdWorkflow {
     private readonly sourcesService: SourcesService,
   ) {}
 
-  @Cron('*/20 * * * * *')
+  @Cron('*/1 * * * * *')
   async runWorkflow() {
    
     try {
