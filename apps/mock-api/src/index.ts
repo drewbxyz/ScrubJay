@@ -422,7 +422,7 @@ app.get("/v2/data/obs/geo/recent/notable", (req, res) => {
   // Generate notable observations near the given coordinates
   const geoNotableObservations: eBirdObservation[] = [];
   
-  for (let i = 0; i < Math.min(maxResultsNum, 10); i++) {
+  for (let i = 0; i < Math.min(maxResultsNum, 2); i++) {
     // Use a default region or try to determine from coordinates
     const regionCode = "US-CA"; // Default to California for now
     const obs = generateRandomObservation(regionCode);
