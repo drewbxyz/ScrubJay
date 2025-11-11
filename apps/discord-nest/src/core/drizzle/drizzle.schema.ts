@@ -8,13 +8,14 @@ import {
   boolean,
   timestamp,
   pgTable,
-  uuid,
+  serial,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 import { timezones } from "@/core/timezones";
 
 export const locations = pgTable(
-  "location",
+  "locations",
   {
     id: text("id").primaryKey(),
     county: text("county").notNull(),
@@ -35,7 +36,7 @@ export const locations = pgTable(
 );
 
 export const observations = pgTable(
-  "observation",
+  "observations",
   {
     speciesCode: text("species_code").notNull(),
     subId: text("sub_id").notNull(),
@@ -72,7 +73,7 @@ export const observations = pgTable(
 );
 
 export const channelEBirdSubscriptions = pgTable(
-  "channel_ebird_subscription",
+  "channel_ebird_subscriptions",
   {
     channelId: text("channel_id").notNull(),
     stateCode: text("state_code").notNull(),
@@ -112,48 +113,17 @@ export const countyTimezones = pgTable(
   (t) => [index("county_code_idx").on(t.countyCode)]
 );
 
-export const SourceType = ["EBIRD"] as const;
-
-// --- Base source table with common fields ---
-export const sources = pgTable(
-  "source",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    type: text("type", { enum: SourceType }).notNull(),
-    fetchIntervalMin: integer("fetch_interval_min").notNull().default(20),
-    active: boolean("active").notNull().default(true),
-    createdAt: timestamp("created_at")
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-    updatedAt: timestamp("updated_at")
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
-  },
-  (t) => [index("source_type_active_idx").on(t.type, t.active)]
-);
-
-// --- eBird source specific fields ---
-export const ebirdSources = pgTable("ebird_source", {
-  sourceId: uuid("source_id")
-    .primaryKey()
-    .references(() => sources.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  regionName: text("region_name").notNull(),
-  regionCode: text("region_code").notNull(),
-});
-
 export const deliveries = pgTable(
-  "delivery",
+  "deliveries",
   {
-    kind: text("kind", { enum: ["RSS", "EBIRD", "EMAIL"] }).notNull(),
-    itemKey: text("item_key").notNull(),
+    id: serial("id").primaryKey(),
+    kind: text("alert_kind").notNull(), // 'ebird' | 'rss'
+    alertId: text("alert_id").notNull(),
     channelId: text("channel_id").notNull(),
-    messageId: text("message_id"),
-    deliveredAt: timestamp("delivered_at")
-      .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+    sentAt: timestamp("sent_at").defaultNow(),
   },
   (t) => [
-    primaryKey({ columns: [t.kind, t.itemKey, t.channelId] }),
-    index("delivery_channel_kind_idx").on(t.channelId, t.kind),
+    uniqueIndex("deliveries_unique_idx").on(t.kind, t.alertId, t.channelId),
+    index("deliveries_channel_idx").on(t.channelId),
   ]
 );

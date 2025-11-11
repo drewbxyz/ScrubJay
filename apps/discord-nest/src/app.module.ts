@@ -1,11 +1,10 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { DrizzleModule } from './core/drizzle/drizzle.module';
+import { DrizzleModule } from "./core/drizzle/drizzle.module";
 import * as Joi from "joi";
 import { ScheduleModule } from "@nestjs/schedule";
 import { NecordModule } from "necord";
 import { GatewayIntentBits } from "discord.js";
-import { WorkflowsModule } from "./workflows/workflows.module";
 
 const configSchema = Joi.object({
   DISCORD_TOKEN: Joi.string().required(),
@@ -25,15 +24,11 @@ const configSchema = Joi.object({
     NecordModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        token: configService.get<string>('DISCORD_TOKEN')!,
-        intents: [
-          GatewayIntentBits.Guilds,
-          GatewayIntentBits.GuildMessages,
-        ],
+        token: configService.get<string>("DISCORD_TOKEN")!,
+        intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
       }),
       inject: [ConfigService],
     }),
-    WorkflowsModule,
   ],
   providers: [],
 })
