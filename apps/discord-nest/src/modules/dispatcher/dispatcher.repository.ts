@@ -13,6 +13,22 @@ import { and, eq, gt, or, sql, isNull } from "drizzle-orm";
 export class DispatcherRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
+  async getConfirmedSinceDate(since: Date) {
+    return this.drizzle.db
+      .selectDistinct({
+        speciesCode: observations.speciesCode,
+        locId: observations.locId,
+      })
+      .from(observations)
+      .where(
+        and(
+          gt(observations.obsDt, since),
+          eq(observations.obsValid, true),
+          eq(observations.obsReviewed, true)
+        )
+      );
+  }
+
   async getUndeliveredObservationsSinceDate(since: Date) {
     return this.drizzle.db
       .select({
