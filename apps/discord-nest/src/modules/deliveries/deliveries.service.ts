@@ -3,8 +3,6 @@ import { DeliveriesRepository } from "./deliveries.repository";
 
 @Injectable()
 export class DeliveriesService {
-  private readonly logger = new Logger(DeliveriesService.name);
-
   constructor(private readonly repo: DeliveriesRepository) {}
 
   async ensureNotDelivered(
