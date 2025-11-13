@@ -1,51 +1,77 @@
 import { DrizzleService } from "@/core/drizzle/drizzle.service";
 import {
   channelEBirdSubscriptions,
+  deliveries,
   filteredSpecies,
   locations,
+  observations,
 } from "@/core/drizzle/drizzle.schema";
 import { Injectable } from "@nestjs/common";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, gt, or, sql, isNull } from "drizzle-orm";
 
 @Injectable()
 export class DispatcherRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
-  async getMatchingChannelsForObservation(commonName: string, locId: string) {
-    const loc = await this.drizzle.db.query.locations.findFirst({
-      columns: {
-        stateCode: true,
-        countyCode: true,
-      },
-      where: eq(locations.id, locId),
-    });
+  async getUndeliveredObservationsSinceDate(since: Date) {
+    return this.drizzle.db
+      .select({
+        channelId: channelEBirdSubscriptions.channelId,
 
-    if (!loc) return [];
+        speciesCode: observations.speciesCode,
+        subId: observations.subId,
+        locId: observations.locId,
+        comName: observations.comName,
+        sciName: observations.sciName,
+        obsDt: observations.obsDt,
+        howMany: observations.howMany,
+        createdAt: observations.createdAt,
+        photoCount: observations.photoCount,
+        audioCount: observations.audioCount,
+        videoCount: observations.videoCount,
 
-    const subscriptions =
-      await this.drizzle.db.query.channelEBirdSubscriptions.findMany({
-        columns: { channelId: true },
-        where: and(
+        county: locations.county,
+        state: locations.state,
+        locationName: locations.name,
+        isPrivate: locations.isPrivate,
+      })
+      .from(observations)
+      .innerJoin(locations, eq(locations.id, observations.locId))
+      .innerJoin(
+        channelEBirdSubscriptions,
+        and(
           eq(channelEBirdSubscriptions.active, true),
-          eq(channelEBirdSubscriptions.stateCode, loc.stateCode),
+          eq(channelEBirdSubscriptions.stateCode, locations.stateCode),
           or(
-            eq(channelEBirdSubscriptions.countyCode, loc.countyCode),
+            eq(channelEBirdSubscriptions.countyCode, locations),
             eq(channelEBirdSubscriptions.countyCode, "*")
           )
-        ),
-      });
-
-    if (subscriptions.length === 0) return [];
-
-    const filtered = await this.drizzle.db.query.filteredSpecies.findMany({
-      columns: { channelId: true },
-      where: eq(filteredSpecies.commonName, commonName),
-    });
-
-    const excluded = new Set(filtered.map((f) => f.channelId));
-
-    return subscriptions
-      .map((c) => c.channelId)
-      .filter((id) => !excluded.has(id));
+        )
+      )
+      .leftJoin(
+        filteredSpecies,
+        and(
+          eq(filteredSpecies.channelId, channelEBirdSubscriptions.channelId),
+          eq(filteredSpecies.commonName, observations.comName)
+        )
+      )
+      .leftJoin(
+        deliveries,
+        and(
+          eq(deliveries.kind, "ebird"),
+          eq(
+            deliveries.alertId,
+            sql`${observations.speciesCode} || ':' || ${observations.subId}`
+          ),
+          eq(deliveries.channelId, channelEBirdSubscriptions.channelId)
+        )
+      )
+      .where(
+        and(
+          gt(observations.createdAt, since),
+          isNull(filteredSpecies.channelId),
+          isNull(deliveries.alertId)
+        )
+      );
   }
 }

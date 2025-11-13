@@ -26,13 +26,37 @@ export class DeliveriesRepository {
     channelId: string
   ) {
     try {
-      return await this.drizzle.db.insert(deliveries).values({
-        kind: alertKind,
-        alertId,
-        channelId,
-      });
+      return await this.drizzle.db
+        .insert(deliveries)
+        .values({
+          kind: alertKind,
+          alertId,
+          channelId,
+        })
+        .onConflictDoNothing();
     } catch (err) {
       // Ignore on unique constaint violation
+    }
+  }
+
+  async markDeliveredBulk(
+    alerts: {
+      alertKind: AlertKind;
+      alertId: string;
+      channelId: string;
+    }[]
+  ) {
+    const batchSize = 100;
+    for (let i = 0; i < alerts.length; i += batchSize) {
+      const batch = alerts.slice(i, i + batchSize).map((alert) => ({
+        kind: alert.alertKind,
+        alertId: alert.alertId,
+        channelId: alert.channelId,
+      }));
+      await this.drizzle.db
+        .insert(deliveries)
+        .values(batch)
+        .onConflictDoNothing();
     }
   }
 

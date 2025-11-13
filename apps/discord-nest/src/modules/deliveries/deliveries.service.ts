@@ -29,4 +29,10 @@ export class DeliveriesService {
   async recordDelivery(alertKind: "ebird", alertId: string, channelId: string) {
     await this.repo.markDelivered(alertKind, alertId, channelId);
   }
+
+  async recordDeliveries(
+    alerts: { alertKind: "ebird"; alertId: string; channelId: string }[]
+  ) {
+    await this.repo.markDeliveredBulk(alerts);
+  }
 }
