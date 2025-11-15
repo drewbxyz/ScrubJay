@@ -95,7 +95,7 @@ const rateLimit = (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const apiKey = req.headers["x-ebirdapikey"] as string;
+  const apiKey = req.headers["x-ebirdapitoken"] as string;
   const now = Date.now();
   const windowMs = 24 * 60 * 60 * 1000; // 24 hours
   const maxRequests = 10000; // eBird API limit
@@ -298,7 +298,7 @@ app.get("/v2/data/obs/:regionCode/recent/notable", (req, res) => {
   // Generate new notable observations (rarer species)
   const newNotableObservations: eBirdObservation[] = [];
 
-  for (let i = 0; i < Math.min(maxResultsNum, 10); i++) {
+  for (let i = 0; i < Math.min(maxResultsNum, 2); i++) {
     const hotspotData =
       hotspotOnly && hotspots[regionCode]
         ? hotspots[regionCode][

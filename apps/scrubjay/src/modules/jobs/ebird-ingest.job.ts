@@ -14,7 +14,7 @@ export class EBirdIngestJob {
     private readonly sourcesService: SourcesService
   ) {}
 
-  @Cron("*/15 * * * * *")
+  @Cron("*/15 * * * *")
   async run() {
     // Wait for bootstrap to complete before running
     await this.bootstrapService.waitForBootstrap();

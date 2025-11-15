@@ -84,13 +84,14 @@ export class DispatcherService {
 
     const aggregatedStats = this.getAggregatedObservationStats(observations);
 
-    const locationText =
-      `Reported at ` + observations[0].isPrivate
+    const locationText = `Reported at ${
+      observations[0].isPrivate
         ? "a private location"
-        : `[${observations[0].locationName}](https://ebird.org/hotspot/${observations[0].locId})`;
+        : `[${observations[0].locationName}](https://ebird.org/hotspot/${observations[0].locId})`
+    }`;
 
     const embed = new EmbedBuilder()
-      .setTitle(`${observations[0].comName}`)
+      .setTitle(`${observations[0].comName} - ${observations[0].county}`)
       .setURL(`https://ebird.org/checklist/${observations[0].subId}`)
       .setDescription(
         `${locationText}\nLatest report: ${aggregatedStats.latestReport.toLocaleString(

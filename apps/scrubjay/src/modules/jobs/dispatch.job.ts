@@ -12,7 +12,7 @@ export class DispatchJob {
     private readonly bootstrapService: BootstrapService
   ) {}
 
-  @Cron("*/5 * * * * *")
+  @Cron("*/5 * * * *")
   async run() {
     // Wait for bootstrap to complete before running
     await this.bootstrapService.waitForBootstrap();

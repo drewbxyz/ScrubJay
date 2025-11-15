@@ -15,7 +15,7 @@ export class EBirdFetcher {
     );
 
     const response = await fetch(url, {
-      headers: { "X-eBirdApiKey": this.configService.get("EBIRD_TOKEN")! },
+      headers: { "X-eBirdApiToken": this.configService.get("EBIRD_TOKEN")! },
     });
     if (!response.ok) {
       this.logger.warn(`Failed to fetch observations: ${response.statusText}`);

@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { EBirdService } from "@/modules/ebird/ebird.service";
 import { DispatcherService } from "@/modules/dispatcher/dispatcher.service";
 import { DeliveriesService } from "@/modules/deliveries/deliveries.service";
-import { SourcesService } from "../sources/sources.service";
+import { SourcesService } from "@/modules/sources/sources.service";
 
 /**
  * Populates DB on startup without triggering any Discord messages.
@@ -36,24 +36,23 @@ export class BootstrapService implements OnModuleInit {
     }
 
     // Wait up to 5 minutes for bootstrap to complete
-    this.bootstrapPromise = new Promise<void>((resolve) => {
+    this.bootstrapPromise = new Promise<void>((resolve, reject) => {
       const checkInterval = setInterval(() => {
         if (this.bootstrapComplete) {
           clearInterval(checkInterval);
           resolve();
         }
-      }, 100); // Check every 100ms
+      }, 100);
 
-      // Timeout after 5 minutes
       setTimeout(
         () => {
           clearInterval(checkInterval);
           if (!this.bootstrapComplete) {
             this.logger.warn(
-              "Bootstrap did not complete within timeout, proceeding anyway"
+              "Bootstrap did not complete within timeout, rejecting attempt"
             );
           }
-          resolve();
+          reject();
         },
         5 * 60 * 1000
       );
