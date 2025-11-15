@@ -1,8 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
-import { EBirdService } from "../ebird/ebird.service";
+import { EBirdService } from "@/modules/ebird/ebird.service";
 import { BootstrapService } from "./bootstrap.service";
-import { SourcesService } from "../sources/sources.service";
+import { SourcesService } from "@/modules/sources/sources.service";
 
 @Injectable()
 export class EBirdIngestJob {
