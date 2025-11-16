@@ -4,7 +4,7 @@ import { DrizzleModule } from "./core/drizzle/drizzle.module";
 import * as Joi from "joi";
 import { ScheduleModule } from "@nestjs/schedule";
 import { NecordModule } from "necord";
-import { GatewayIntentBits } from "discord.js";
+import { GatewayIntentBits, Partials } from "discord.js";
 import { JobsModule } from "./modules/jobs/jobs.module";
 
 const configSchema = Joi.object({
@@ -26,7 +26,12 @@ const configSchema = Joi.object({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         token: configService.get<string>("DISCORD_TOKEN")!,
-        intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+        intents: [
+          GatewayIntentBits.Guilds,
+          GatewayIntentBits.GuildMessages,
+          GatewayIntentBits.GuildMessageReactions,
+        ],
+        partials: [Partials.Message, Partials.Channel, Partials.Reaction],
       }),
       inject: [ConfigService],
     }),
