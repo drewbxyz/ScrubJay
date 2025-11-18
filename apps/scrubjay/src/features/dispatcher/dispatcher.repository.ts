@@ -7,7 +7,7 @@ import {
   locations,
   observations,
 } from "@/core/drizzle/drizzle.schema";
-import type { DrizzleService } from "@/core/drizzle/drizzle.service";
+import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 @Injectable()
 export class DispatcherRepository {

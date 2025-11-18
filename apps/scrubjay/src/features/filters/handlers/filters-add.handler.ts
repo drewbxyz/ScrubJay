@@ -1,9 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
-import type {
+import {
   ReactionHandler,
   ReactionHandlerPayload,
 } from "@/discord/reaction-router/reaction-handler";
-import type { FiltersService } from "../filters.service";
+import { FiltersService } from "../filters.service";
 
 @Injectable()
 export class FiltersAddHandler implements ReactionHandler {

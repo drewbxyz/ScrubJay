@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { and, eq, sql } from "drizzle-orm";
 import { deliveries } from "@/core/drizzle/drizzle.schema";
-import type { DrizzleService } from "@/core/drizzle/drizzle.service";
+import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 type AlertKind = "ebird";
 

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { gt } from "drizzle-orm";
 import { locations, observations } from "@/core/drizzle/drizzle.schema";
-import type { DrizzleService } from "@/core/drizzle/drizzle.service";
+import { DrizzleService } from "@/core/drizzle/drizzle.service";
 import type {
   EBirdLocation,
   TransformedEBirdObservation,

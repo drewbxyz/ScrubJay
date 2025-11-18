@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import type { Client, EmbedBuilder } from "discord.js";
+import { Client, type EmbedBuilder } from "discord.js";
 
 @Injectable()
 export class DiscordHelper {

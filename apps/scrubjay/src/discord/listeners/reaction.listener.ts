@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Events } from "discord.js";
 import { Context, type ContextOf, On } from "necord";
-import type { ReactionRouter } from "../reaction-router/reaction-router.service";
+import { ReactionRouter } from "../reaction-router/reaction-router.service";
 
 @Injectable()
 export class ReactionListener {

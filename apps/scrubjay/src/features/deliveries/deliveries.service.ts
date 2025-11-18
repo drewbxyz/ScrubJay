@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { DeliveriesRepository } from "./deliveries.repository";
+import { DeliveriesRepository } from "./deliveries.repository";
 
 @Injectable()
 export class DeliveriesService {

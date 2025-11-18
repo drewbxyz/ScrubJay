@@ -1,8 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { EmbedBuilder } from "discord.js";
-import type { DiscordHelper } from "@/discord/discord.helper";
-import type { DeliveriesService } from "../deliveries/deliveries.service";
-import type { DispatcherRepository } from "./dispatcher.repository";
+import { DiscordHelper } from "@/discord/discord.helper";
+import { DeliveriesService } from "../deliveries/deliveries.service";
+import { DispatcherRepository } from "./dispatcher.repository";
 import type { DispatchableObservation } from "./dispatcher.schema";
 
 @Injectable()

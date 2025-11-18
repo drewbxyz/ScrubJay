@@ -4,7 +4,7 @@ import {
   channelEBirdSubscriptions,
   filteredSpecies,
 } from "@/core/drizzle/drizzle.schema";
-import type { DrizzleService } from "@/core/drizzle/drizzle.service";
+import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 @Injectable()
 export class FiltersRepository {

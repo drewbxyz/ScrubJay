@@ -1,11 +1,11 @@
 import { Injectable, Logger } from "@nestjs/common";
-import type { EBirdFetcher } from "./ebird.fetcher";
-import type { EBirdRepository } from "./ebird.repository";
+import { EBirdFetcher } from "./ebird.fetcher";
+import { EBirdRepository } from "./ebird.repository";
 import type {
   EBirdObservation,
   TransformedEBirdObservation,
 } from "./ebird.schema";
-import type { EBirdTransformer } from "./ebird.transformer";
+import { EBirdTransformer } from "./ebird.transformer";
 
 @Injectable()
 export class EBirdService {

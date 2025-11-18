@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
-import type { DispatcherService } from "@/features/dispatcher/dispatcher.service";
-import type { BootstrapService } from "./bootstrap.service";
+import { DispatcherService } from "@/features/dispatcher/dispatcher.service";
+import { BootstrapService } from "./bootstrap.service";
 
 @Injectable()
 export class DispatchJob {

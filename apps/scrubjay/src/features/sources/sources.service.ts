@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import type { SourcesRepository } from "./sources.repository";
+import { SourcesRepository } from "./sources.repository";
 
 @Injectable()
 export class SourcesService {
