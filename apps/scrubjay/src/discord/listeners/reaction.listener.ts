@@ -29,7 +29,7 @@ export class ReactionListener {
         user,
       });
     } catch (err) {
-      this.logger.error(`Could not h`);
+      this.logger.error(`Could not route reaction: ${err}`);
     }
   }
 }
