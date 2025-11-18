@@ -17,8 +17,9 @@
         "check-types": {
             "dependsOn": ["^check-types"]
         },
-        "lint": {
-            "dependsOn": ["^lint"]
+        "//#format-and-lint": {},
+        "//#format-and-lint:fix": {
+          "cache": false
         }
     }
 }
