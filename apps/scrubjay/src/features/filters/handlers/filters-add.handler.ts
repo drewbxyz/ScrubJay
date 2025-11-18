@@ -4,15 +4,11 @@ import {
 } from "@/discord/reaction-router/reaction-handler";
 import { Injectable, Logger } from "@nestjs/common";
 import { FiltersService } from "../filters.service";
-import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 @Injectable()
 export class FiltersAddHandler implements ReactionHandler {
   private readonly logger = new Logger(FiltersAddHandler.name);
-  constructor(
-    private readonly filters: FiltersService,
-    private readonly drizzle: DrizzleService
-  ) {}
+  constructor(private readonly filters: FiltersService) {}
 
   supports(emoji: string): boolean {
     return emoji === "👎";
