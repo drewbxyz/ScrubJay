@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { DeliveriesRepository } from "./deliveries.repository";
+import type { DeliveriesRepository } from "./deliveries.repository";
 
 @Injectable()
 export class DeliveriesService {
@@ -8,12 +8,12 @@ export class DeliveriesService {
   async ensureNotDelivered(
     alertKind: "ebird",
     alertId: string,
-    channelId: string
+    channelId: string,
   ) {
     const delivered = await this.repo.isDelivered(
       alertKind,
       alertId,
-      channelId
+      channelId,
     );
     if (delivered) {
       return false;
@@ -26,7 +26,7 @@ export class DeliveriesService {
   }
 
   async recordDeliveries(
-    alerts: { alertKind: "ebird"; alertId: string; channelId: string }[]
+    alerts: { alertKind: "ebird"; alertId: string; channelId: string }[],
   ) {
     await this.repo.markDeliveredBulk(alerts);
   }

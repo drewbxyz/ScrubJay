@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { EBirdObservation } from "./ebird.schema";
+import type { ConfigService } from "@nestjs/config";
+import type { EBirdObservation } from "./ebird.schema";
 
 @Injectable()
 export class EBirdFetcher {
@@ -11,7 +11,7 @@ export class EBirdFetcher {
   async fetchRareObservations(regionCode: string): Promise<EBirdObservation[]> {
     const url = new URL(
       `/v2/data/obs/${regionCode}/recent/notable?back=7&detail=full`,
-      this.configService.getOrThrow("EBIRD_BASE_URL")
+      this.configService.getOrThrow("EBIRD_BASE_URL"),
     );
 
     const response = await fetch(url, {

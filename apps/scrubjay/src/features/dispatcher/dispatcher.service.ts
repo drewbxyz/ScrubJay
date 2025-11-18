@@ -1,9 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { DispatcherRepository } from "./dispatcher.repository";
-import { DeliveriesService } from "../deliveries/deliveries.service";
-import { DiscordHelper } from "@/discord/discord.helper";
-import { DispatchableObservation } from "./dispatcher.schema";
 import { EmbedBuilder } from "discord.js";
+import type { DiscordHelper } from "@/discord/discord.helper";
+import type { DeliveriesService } from "../deliveries/deliveries.service";
+import type { DispatcherRepository } from "./dispatcher.repository";
+import type { DispatchableObservation } from "./dispatcher.schema";
 
 @Injectable()
 export class DispatcherService {
@@ -12,7 +12,7 @@ export class DispatcherService {
   constructor(
     private readonly repo: DispatcherRepository,
     private readonly deliveries: DeliveriesService,
-    private readonly discord: DiscordHelper
+    private readonly discord: DiscordHelper,
   ) {}
 
   private generateSpeciesLocationId(speciesCode: string, locId: string) {
@@ -49,7 +49,7 @@ export class DispatcherService {
   }
 
   private getAggregatedObservationStats(
-    groupedObservations: DispatchableObservation[]
+    groupedObservations: DispatchableObservation[],
   ) {
     return groupedObservations.reduce(
       (acc, obs) => {
@@ -65,20 +65,20 @@ export class DispatcherService {
         return acc;
       },
       {
-        totalReports: 0,
-        totalPhotos: 0,
-        totalVideos: 0,
-        totalAudio: 0,
         howMany: 0,
         latestReport: groupedObservations[0]?.obsDt,
-      }
+        totalAudio: 0,
+        totalPhotos: 0,
+        totalReports: 0,
+        totalVideos: 0,
+      },
     );
   }
 
   private async sendGroupedEBirdAlert(
     channelId: string,
     observations: DispatchableObservation[],
-    confirmed: boolean
+    confirmed: boolean,
   ) {
     if (observations.length === 0) return;
 
@@ -97,14 +97,14 @@ export class DispatcherService {
         `${locationText}\nLatest report: ${aggregatedStats.latestReport.toLocaleString(
           "en-US",
           {
-            month: "numeric",
             day: "numeric",
-            year: "numeric",
             hour: "numeric",
-            minute: "2-digit",
             hour12: true,
-          }
-        )}`
+            minute: "2-digit",
+            month: "numeric",
+            year: "numeric",
+          },
+        )}`,
       )
       .setColor(confirmed ? 0x2ecc71 : 0xf1c40f);
 
@@ -151,13 +151,13 @@ export class DispatcherService {
     const confirmedInLastWeek = new Set(
       (
         await this.repo.getConfirmedSinceDate(
-          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // seven days ago
+          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // seven days ago
         )
-      ).map((o) => this.generateSpeciesLocationId(o.speciesCode, o.locId))
+      ).map((o) => this.generateSpeciesLocationId(o.speciesCode, o.locId)),
     );
 
     this.logger.debug(
-      `Found ${unsentObservations.length} new channel-observation pairs`
+      `Found ${unsentObservations.length} new channel-observation pairs`,
     );
 
     const grouped = this.groupObservations(unsentObservations);
@@ -172,20 +172,20 @@ export class DispatcherService {
       for (const [species, locMap] of speciesMap) {
         for (const [location, obsList] of locMap) {
           const isConfirmedInLastWeek = confirmedInLastWeek.has(
-            this.generateSpeciesLocationId(species, location)
+            this.generateSpeciesLocationId(species, location),
           );
 
           await this.sendGroupedEBirdAlert(
             channelId,
             obsList,
-            isConfirmedInLastWeek
+            isConfirmedInLastWeek,
           );
 
           for (const obs of obsList) {
             deliveryValues.push({
+              alertId: `${obs.speciesCode}:${obs.subId}`,
               alertKind: "ebird",
               channelId,
-              alertId: `${obs.speciesCode}:${obs.subId}`,
             });
           }
         }
@@ -195,7 +195,7 @@ export class DispatcherService {
     await this.deliveries.recordDeliveries(deliveryValues);
 
     this.logger.log(
-      `Marked ${deliveryValues.length} / ${unsentObservations.length} as delivered (${Math.round((100 * deliveryValues.length) / unsentObservations.length)}%)`
+      `Marked ${deliveryValues.length} / ${unsentObservations.length} as delivered (${Math.round((100 * deliveryValues.length) / unsentObservations.length)}%)`,
     );
   }
 }

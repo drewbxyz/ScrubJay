@@ -1,4 +1,5 @@
-import { DrizzleService } from "@/core/drizzle/drizzle.service";
+import { Injectable } from "@nestjs/common";
+import { and, eq, gt, isNull, or, sql } from "drizzle-orm";
 import {
   channelEBirdSubscriptions,
   deliveries,
@@ -6,8 +7,7 @@ import {
   locations,
   observations,
 } from "@/core/drizzle/drizzle.schema";
-import { Injectable } from "@nestjs/common";
-import { and, eq, gt, or, sql, isNull } from "drizzle-orm";
+import type { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 @Injectable()
 export class DispatcherRepository {
@@ -16,40 +16,40 @@ export class DispatcherRepository {
   async getConfirmedSinceDate(since: Date) {
     return this.drizzle.db
       .selectDistinct({
-        speciesCode: observations.speciesCode,
         locId: observations.locId,
+        speciesCode: observations.speciesCode,
       })
       .from(observations)
       .where(
         and(
           gt(observations.obsDt, since),
           eq(observations.obsValid, true),
-          eq(observations.obsReviewed, true)
-        )
+          eq(observations.obsReviewed, true),
+        ),
       );
   }
 
   async getUndeliveredObservationsSinceDate(since?: Date) {
     return this.drizzle.db
       .select({
-        channelId: channelEBirdSubscriptions.channelId,
-
-        speciesCode: observations.speciesCode,
-        subId: observations.subId,
-        locId: observations.locId,
-        comName: observations.comName,
-        sciName: observations.sciName,
-        obsDt: observations.obsDt,
-        howMany: observations.howMany,
-        createdAt: observations.createdAt,
-        photoCount: observations.photoCount,
         audioCount: observations.audioCount,
-        videoCount: observations.videoCount,
+        channelId: channelEBirdSubscriptions.channelId,
+        comName: observations.comName,
 
         county: locations.county,
-        state: locations.state,
-        locationName: locations.name,
+        createdAt: observations.createdAt,
+        howMany: observations.howMany,
         isPrivate: locations.isPrivate,
+        locationName: locations.name,
+        locId: observations.locId,
+        obsDt: observations.obsDt,
+        photoCount: observations.photoCount,
+        sciName: observations.sciName,
+
+        speciesCode: observations.speciesCode,
+        state: locations.state,
+        subId: observations.subId,
+        videoCount: observations.videoCount,
       })
       .from(observations)
       .innerJoin(locations, eq(locations.id, observations.locId))
@@ -60,16 +60,16 @@ export class DispatcherRepository {
           eq(channelEBirdSubscriptions.stateCode, locations.stateCode),
           or(
             eq(channelEBirdSubscriptions.countyCode, locations.countyCode),
-            eq(channelEBirdSubscriptions.countyCode, "*")
-          )
-        )
+            eq(channelEBirdSubscriptions.countyCode, "*"),
+          ),
+        ),
       )
       .leftJoin(
         filteredSpecies,
         and(
           eq(filteredSpecies.channelId, channelEBirdSubscriptions.channelId),
-          eq(filteredSpecies.commonName, observations.comName)
-        )
+          eq(filteredSpecies.commonName, observations.comName),
+        ),
       )
       .leftJoin(
         deliveries,
@@ -77,17 +77,17 @@ export class DispatcherRepository {
           eq(deliveries.kind, "ebird"),
           eq(
             deliveries.alertId,
-            sql`${observations.speciesCode} || ':' || ${observations.subId}`
+            sql`${observations.speciesCode} || ':' || ${observations.subId}`,
           ),
-          eq(deliveries.channelId, channelEBirdSubscriptions.channelId)
-        )
+          eq(deliveries.channelId, channelEBirdSubscriptions.channelId),
+        ),
       )
       .where(
         and(
           since ? gt(observations.createdAt, since) : undefined,
           isNull(filteredSpecies.channelId),
-          isNull(deliveries.alertId)
-        )
+          isNull(deliveries.alertId),
+        ),
       );
   }
 }

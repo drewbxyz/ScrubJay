@@ -1,5 +1,5 @@
 {
-    "name": "@scrubjay/typescript-config",
-    "version": "0.0.1",
-    "private": true
+  "name": "@scrubjay/typescript-config",
+  "private": true,
+  "version": "0.0.1"
 }

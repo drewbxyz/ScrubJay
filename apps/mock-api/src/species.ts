@@ -30,7 +30,7 @@ export const species = [
     sciName: "Gymnogyps californianus",
     speciesCode: "calcon",
   },
-  
+
   // Common North American birds
   {
     comName: "American Robin",
@@ -82,7 +82,7 @@ export const species = [
     sciName: "Haemorhous mexicanus",
     speciesCode: "houfin",
   },
-  
+
   // Raptors
   {
     comName: "Red-tailed Hawk",
@@ -109,7 +109,7 @@ export const species = [
     sciName: "Aquila chrysaetos",
     speciesCode: "goleag",
   },
-  
+
   // Waterfowl
   {
     comName: "Mallard",
@@ -136,7 +136,7 @@ export const species = [
     sciName: "Mareca americana",
     speciesCode: "amewig",
   },
-  
+
   // Shorebirds
   {
     comName: "Killdeer",
@@ -163,7 +163,7 @@ export const species = [
     sciName: "Limosa fedoa",
     speciesCode: "margod",
   },
-  
+
   // Gulls and Terns
   {
     comName: "Western Gull",
@@ -190,7 +190,7 @@ export const species = [
     sciName: "Sterna forsteri",
     speciesCode: "forter",
   },
-  
+
   // Rare/Notable species
   {
     comName: "Inaccessible Island Rail",

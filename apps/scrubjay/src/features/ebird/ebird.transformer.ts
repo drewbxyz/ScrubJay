@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import {
+import type {
   EBirdLocation,
   EBirdObservation,
   TransformedEBirdObservation,
@@ -9,8 +9,8 @@ import {
 export class EBirdTransformer {
   private countMedia(observation: EBirdObservation) {
     return {
-      photoCount: observation.evidence === "P" ? 1 : 0,
       audioCount: observation.evidence === "A" ? 1 : 0,
+      photoCount: observation.evidence === "P" ? 1 : 0,
       videoCount: observation.evidence === "V" ? 1 : 0,
     };
   }
@@ -28,13 +28,13 @@ export class EBirdTransformer {
       if (existing) {
         acc.set(key, {
           ...existing,
-          photoCount: existing.photoCount + mediaCounts.photoCount,
-          videoCount: existing.videoCount + mediaCounts.videoCount,
           audioCount: existing.audioCount + mediaCounts.audioCount,
+          photoCount: existing.photoCount + mediaCounts.photoCount,
           presenceNoted: this.isPresenceNoted(
             existing.presenceNoted,
-            observation.presenceNoted
+            observation.presenceNoted,
           ),
+          videoCount: existing.videoCount + mediaCounts.videoCount,
         });
       } else {
         acc.set(key, {
@@ -49,20 +49,20 @@ export class EBirdTransformer {
   }
 
   extractLocation(
-    observation: EBirdObservation | TransformedEBirdObservation
+    observation: EBirdObservation | TransformedEBirdObservation,
   ): EBirdLocation {
     return {
-      locId: observation.locId,
-      locName: observation.locName,
       countryCode: observation.countryCode,
       countryName: observation.countryName,
+      lat: observation.lat,
+      lng: observation.lng,
+      locationPrivate: observation.locationPrivate,
+      locId: observation.locId,
+      locName: observation.locName,
       subnational1Code: observation.subnational1Code,
       subnational1Name: observation.subnational1Name,
       subnational2Code: observation.subnational2Code,
       subnational2Name: observation.subnational2Name,
-      locationPrivate: observation.locationPrivate,
-      lat: observation.lat,
-      lng: observation.lng,
     };
   }
 }

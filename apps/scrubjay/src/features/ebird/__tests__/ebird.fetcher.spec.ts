@@ -1,6 +1,6 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { EBirdFetcher } from "../ebird.fetcher";
 import { ConfigService } from "@nestjs/config";
+import { Test, type TestingModule } from "@nestjs/testing";
+import { EBirdFetcher } from "../ebird.fetcher";
 
 describe("EBirdFetcher", () => {
   let fetcher: EBirdFetcher;

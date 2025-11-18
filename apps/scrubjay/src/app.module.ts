@@ -1,17 +1,17 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { DrizzleModule } from "./core/drizzle/drizzle.module";
-import * as Joi from "joi";
 import { ScheduleModule } from "@nestjs/schedule";
-import { NecordModule } from "necord";
 import { GatewayIntentBits, Partials } from "discord.js";
+import * as Joi from "joi";
+import { NecordModule } from "necord";
 import { JobsModule } from "@/features/jobs/jobs.module";
+import { DrizzleModule } from "./core/drizzle/drizzle.module";
 
 const configSchema = Joi.object({
-  DISCORD_TOKEN: Joi.string().required(),
   DISCORD_CLIENT_ID: Joi.string().required(),
-  EBIRD_TOKEN: Joi.string().required(),
+  DISCORD_TOKEN: Joi.string().required(),
   EBIRD_BASE_URL: Joi.string().optional().default("https://api.ebird.org/"),
+  EBIRD_TOKEN: Joi.string().required(),
 });
 
 @Module({
@@ -24,16 +24,16 @@ const configSchema = Joi.object({
     DrizzleModule,
     NecordModule.forRootAsync({
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        token: configService.get<string>("DISCORD_TOKEN")!,
         intents: [
           GatewayIntentBits.Guilds,
           GatewayIntentBits.GuildMessages,
           GatewayIntentBits.GuildMessageReactions,
         ],
         partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+        token: configService.get<string>("DISCORD_TOKEN")!,
       }),
-      inject: [ConfigService],
     }),
     JobsModule,
   ],

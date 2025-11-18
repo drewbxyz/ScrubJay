@@ -1,10 +1,10 @@
+import { Injectable } from "@nestjs/common";
+import { eq } from "drizzle-orm";
 import {
   channelEBirdSubscriptions,
   filteredSpecies,
 } from "@/core/drizzle/drizzle.schema";
-import { DrizzleService } from "@/core/drizzle/drizzle.service";
-import { Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import type { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 @Injectable()
 export class FiltersRepository {

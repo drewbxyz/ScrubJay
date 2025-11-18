@@ -1,8 +1,6 @@
 export const regions = {
   "US-CA": {
-    name: "California",
     code: "US-CA",
-    timezone: "America/Los_Angeles",
     counties: {
       // Alameda: "US-CA-001",
       // Alpine: "US-CA-003",
@@ -63,5 +61,7 @@ export const regions = {
       // Yolo: "US-CA-113",
       // Yuba: "US-CA-115",
     },
+    name: "California",
+    timezone: "America/Los_Angeles",
   },
 };

@@ -1,6 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Client } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
+import { Injectable, Logger } from "@nestjs/common";
+import type { Client, EmbedBuilder } from "discord.js";
 
 @Injectable()
 export class DiscordHelper {
@@ -13,13 +12,15 @@ export class DiscordHelper {
    */
   async sendEmbedsToChannel(
     channelId: string,
-    embeds: EmbedBuilder[]
+    embeds: EmbedBuilder[],
   ): Promise<boolean> {
     try {
       const channel = await this.client.channels.fetch(channelId);
-      
+
       if (!channel || !channel.isTextBased() || !channel.isSendable()) {
-        this.logger.error(`Channel ${channelId} not found or not a text channel or not sendable by the bot`);
+        this.logger.error(
+          `Channel ${channelId} not found or not a text channel or not sendable by the bot`,
+        );
         return false;
       }
 
@@ -33,7 +34,9 @@ export class DiscordHelper {
 
       return true;
     } catch (error) {
-      this.logger.error(`Error sending embeds to channel ${channelId}: ${error}`);
+      this.logger.error(
+        `Error sending embeds to channel ${channelId}: ${error}`,
+      );
       return false;
     }
   }
@@ -43,13 +46,15 @@ export class DiscordHelper {
    */
   async sendEmbedToChannel(
     channelId: string,
-    embed: EmbedBuilder
+    embed: EmbedBuilder,
   ): Promise<boolean> {
     try {
       const channel = await this.client.channels.fetch(channelId);
-      
+
       if (!channel || !channel.isTextBased() || !channel.isSendable()) {
-        this.logger.error(`Channel ${channelId} not found or not a text channel or not sendable by the bot`);
+        this.logger.error(
+          `Channel ${channelId} not found or not a text channel or not sendable by the bot`,
+        );
         return false;
       }
 
@@ -57,7 +62,9 @@ export class DiscordHelper {
       this.logger.log(`Sent embed to channel ${channelId}`);
       return true;
     } catch (error) {
-      this.logger.error(`Error sending embed to channel ${channelId}: ${error}`);
+      this.logger.error(
+        `Error sending embed to channel ${channelId}: ${error}`,
+      );
       return false;
     }
   }
@@ -67,13 +74,15 @@ export class DiscordHelper {
    */
   async sendMessageToChannel(
     channelId: string,
-    message: string
+    message: string,
   ): Promise<boolean> {
     try {
       const channel = await this.client.channels.fetch(channelId);
-      
+
       if (!channel || !channel.isTextBased() || !channel.isSendable()) {
-        this.logger.error(`Channel ${channelId} not found or not a text channel or not sendable`);
+        this.logger.error(
+          `Channel ${channelId} not found or not a text channel or not sendable`,
+        );
         return false;
       }
 
@@ -81,7 +90,9 @@ export class DiscordHelper {
       this.logger.log(`Sent message to channel ${channelId}`);
       return true;
     } catch (error) {
-      this.logger.error(`Error sending message to channel ${channelId}: ${error}`);
+      this.logger.error(
+        `Error sending message to channel ${channelId}: ${error}`,
+      );
       return false;
     }
   }

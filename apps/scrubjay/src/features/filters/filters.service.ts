@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { FiltersRepository } from "./filters.repository";
+import type { FiltersRepository } from "./filters.repository";
 
 @Injectable()
 export class FiltersService {

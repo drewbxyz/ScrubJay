@@ -1,9 +1,9 @@
-import {
+import { Injectable, Logger } from "@nestjs/common";
+import type {
   ReactionHandler,
   ReactionHandlerPayload,
 } from "@/discord/reaction-router/reaction-handler";
-import { Injectable, Logger } from "@nestjs/common";
-import { FiltersService } from "../filters.service";
+import type { FiltersService } from "../filters.service";
 
 @Injectable()
 export class FiltersAddHandler implements ReactionHandler {
@@ -26,7 +26,7 @@ export class FiltersAddHandler implements ReactionHandler {
     const message = reaction.message;
 
     const channelSub = await this.filters.isChannelFilterable(
-      message.channelId
+      message.channelId,
     );
 
     if (!channelSub) return;
@@ -41,13 +41,13 @@ export class FiltersAddHandler implements ReactionHandler {
       await this.filters.addFilter(message.channelId, speciesCommonName);
     } catch (err) {
       this.logger.error(
-        `Could not insert filter into database: ${message.channelId} ${speciesCommonName}`
+        `Could not insert filter into database: ${message.channelId} ${speciesCommonName}`,
       );
       return;
     }
 
     this.logger.log(
-      `Filter added: ${speciesCommonName} - ${message.channelId}`
+      `Filter added: ${speciesCommonName} - ${message.channelId}`,
     );
   }
 }

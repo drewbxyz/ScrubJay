@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
-import { DispatcherService } from "@/features/dispatcher/dispatcher.service";
-import { BootstrapService } from "./bootstrap.service";
+import type { DispatcherService } from "@/features/dispatcher/dispatcher.service";
+import type { BootstrapService } from "./bootstrap.service";
 
 @Injectable()
 export class DispatchJob {
@@ -9,7 +9,7 @@ export class DispatchJob {
 
   constructor(
     private readonly dispatcher: DispatcherService,
-    private readonly bootstrapService: BootstrapService
+    private readonly bootstrapService: BootstrapService,
   ) {}
 
   @Cron("*/5 * * * *")
@@ -19,7 +19,7 @@ export class DispatchJob {
 
     const since = new Date(Date.now() - 15 * 60 * 1000);
     this.logger.debug(
-      `Running dispatch job for alerts since ${since.toISOString()}`
+      `Running dispatch job for alerts since ${since.toISOString()}`,
     );
     await this.dispatcher.dispatchEBirdSince(since);
   }

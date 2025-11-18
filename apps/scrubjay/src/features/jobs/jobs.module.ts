@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
-import { EBirdModule } from "../ebird/ebird.module";
 import { ScheduleModule } from "@nestjs/schedule";
-import { DispatcherModule } from "../dispatcher/dispatcher.module";
 import { DeliveriesModule } from "../deliveries/deliveries.module";
-import { BootstrapService } from "./bootstrap.service";
-import { EBirdIngestJob } from "./ebird-ingest.job";
-import { DispatchJob } from "./dispatch.job";
+import { DispatcherModule } from "../dispatcher/dispatcher.module";
+import { EBirdModule } from "../ebird/ebird.module";
 import { SourcesModule } from "../sources/sources.module";
+import { BootstrapService } from "./bootstrap.service";
+import { DispatchJob } from "./dispatch.job";
+import { EBirdIngestJob } from "./ebird-ingest.job";
 
 @Module({
   imports: [

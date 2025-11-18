@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleDestroy } from "@nestjs/common";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import * as schema from "./drizzle.schema";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import type * as schema from "./drizzle.schema";
 import { PG_CONNECTION } from "./pg-connection";
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ReactionHandler, ReactionHandlerPayload } from "./reaction-handler";
+import type { ReactionHandler, ReactionHandlerPayload } from "./reaction-handler";
 
 export const REACTION_HANDLERS = Symbol("REACTION_HANDLERS");
 

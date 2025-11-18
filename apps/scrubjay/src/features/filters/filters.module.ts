@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
+import { DrizzleModule } from "@/core/drizzle/drizzle.module";
+import { FiltersRepository } from "./filters.repository";
 import { FiltersService } from "./filters.service";
 import { FiltersAddHandler } from "./handlers/filters-add.handler";
-import { FiltersRepository } from "./filters.repository";
-import { DrizzleModule } from "@/core/drizzle/drizzle.module";
 
 @Module({
+  exports: [FiltersService, FiltersAddHandler],
   imports: [DrizzleModule],
   providers: [FiltersService, FiltersRepository, FiltersAddHandler],
-  exports: [FiltersService, FiltersAddHandler],
 })
 export class FiltersModule {}

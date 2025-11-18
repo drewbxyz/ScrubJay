@@ -24,10 +24,10 @@ Object.keys(hotspots).forEach((regionCode) => {
   const regionHotspots = hotspots[regionCode as keyof typeof hotspots];
   if (regionHotspots) {
     locationPool[regionCode] = regionHotspots.map((hotspot) => ({
-      locId: hotspot.locId,
-      locName: hotspot.locName,
       lat: hotspot.lat,
       lng: hotspot.lng,
+      locId: hotspot.locId,
+      locName: hotspot.locName,
     }));
   }
 });
@@ -72,7 +72,7 @@ const rateLimits: Record<string, { count: number; resetTime: number }> = {};
 const authenticateApiKey = (
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) => {
   const apiKey = req.headers["x-ebirdapitoken"] as string;
 
@@ -93,7 +93,7 @@ const authenticateApiKey = (
 const rateLimit = (
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ) => {
   const apiKey = req.headers["x-ebirdapitoken"] as string;
   const now = Date.now();
@@ -114,7 +114,7 @@ const rateLimit = (
 
 function generateRandomObservation(
   regionCode: string,
-  hotspot?: { locId: string; locName: string; lat: number; lng: number }
+  hotspot?: { locId: string; locName: string; lat: number; lng: number },
 ): eBirdObservation {
   const region = regions[regionCode as keyof typeof regions];
   const randomSpecies = species[Math.floor(Math.random() * species.length)];
@@ -146,10 +146,10 @@ function generateRandomObservation(
     } else {
       // Create new location and add to pool
       hotspotData = {
-        locId: crypto.randomUUID(),
-        locName: `Random Location ${Math.floor(Math.random() * 1000)}`,
         lat: 37.7749 + (Math.random() - 0.5) * 0.1,
         lng: -122.4194 + (Math.random() - 0.5) * 0.1,
+        locId: crypto.randomUUID(),
+        locName: `Random Location ${Math.floor(Math.random() * 1000)}`,
       };
 
       // Add new location to pool for future reuse
@@ -165,40 +165,40 @@ function generateRandomObservation(
     .format("YYYY-MM-DD HH:mm:ss");
 
   return {
-    speciesCode: randomSpecies.speciesCode,
+    checklistId: crypto.randomUUID(),
     comName: randomSpecies.comName,
-    sciName: randomSpecies.sciName,
-    locId: hotspotData.locId,
-    locName: hotspotData.locName,
-    obsDt,
-    howMany: Math.floor(Math.random() * 10) + 1,
-    lat: hotspotData.lat,
-    lng: hotspotData.lng,
-    obsValid: true,
-    obsReviewed: Math.random() > 0.3,
-    locationPrivate: false,
-    subId: crypto.randomUUID(),
     countryCode: "US",
     countryName: "United States",
-    subnational1Code: region.code,
-    subnational1Name: region.name,
-    subnational2Code:
-      region.counties[randomSubregion as keyof typeof region.counties],
-    subnational2Name: randomSubregion,
-    firstName: "John",
-    lastName: "Doe",
-    userDisplayName: "John Doe",
-    obsId: crypto.randomUUID(),
-    checklistId: crypto.randomUUID(),
-    presenceNoted: true,
-    hasRichMedia: Math.random() > 0.8,
-    hasComments: Math.random() > 0.7,
     evidence:
       Math.random() > 0.9
         ? (["P", "A", "V"][Math.floor(Math.random() * 3)] as "P" | "A" | "V")
         : null,
     exoticsCategory: null,
+    firstName: "John",
+    hasComments: Math.random() > 0.7,
+    hasRichMedia: Math.random() > 0.8,
+    howMany: Math.floor(Math.random() * 10) + 1,
     isChecklistReviewed: Math.random() > 0.2,
+    lastName: "Doe",
+    lat: hotspotData.lat,
+    lng: hotspotData.lng,
+    locationPrivate: false,
+    locId: hotspotData.locId,
+    locName: hotspotData.locName,
+    obsDt,
+    obsId: crypto.randomUUID(),
+    obsReviewed: Math.random() > 0.3,
+    obsValid: true,
+    presenceNoted: true,
+    sciName: randomSpecies.sciName,
+    speciesCode: randomSpecies.speciesCode,
+    subId: crypto.randomUUID(),
+    subnational1Code: region.code,
+    subnational1Name: region.name,
+    subnational2Code:
+      region.counties[randomSubregion as keyof typeof region.counties],
+    subnational2Name: randomSubregion,
+    userDisplayName: "John Doe",
   };
 }
 
@@ -209,8 +209,6 @@ app.use("/v2", authenticateApiKey, rateLimit);
 
 app.get("/", (_req, res) => {
   res.json({
-    message: "eBird Mock API Server for Development",
-    version: "2.0",
     endpoints: [
       "GET /v2/data/obs/{regionCode}/recent",
       "GET /v2/data/obs/{regionCode}/recent/notable",
@@ -220,6 +218,8 @@ app.get("/", (_req, res) => {
       "GET /v2/data/obs/geo/recent",
       "GET /v2/data/obs/geo/recent/notable",
     ],
+    message: "eBird Mock API Server for Development",
+    version: "2.0",
   });
 });
 
@@ -415,22 +415,22 @@ app.get("/v2/ref/species/info/:speciesCode", (req, res) => {
   }
 
   res.json({
-    speciesCode: speciesData.speciesCode,
-    comName: speciesData.comName,
-    sciName: speciesData.sciName,
-    category: "species",
-    taxonOrder: Math.floor(Math.random() * 10000),
     bandingCodes: [speciesData.speciesCode.substring(0, 4).toUpperCase()],
+    category: "species",
+    comName: speciesData.comName,
     comNameCodes: [speciesData.speciesCode],
-    sciNameCodes: [speciesData.speciesCode],
-    order: "Passeriformes",
-    familyComName: "Mock Family",
-    familySciName: "Mockidae",
-    reportAs: speciesData.speciesCode,
     extinct: false,
     extinctYear: null,
     familyCode: "mock",
+    familyComName: "Mock Family",
+    familySciName: "Mockidae",
+    order: "Passeriformes",
     orderCode: "passeriformes",
+    reportAs: speciesData.speciesCode,
+    sciName: speciesData.sciName,
+    sciNameCodes: [speciesData.speciesCode],
+    speciesCode: speciesData.speciesCode,
+    taxonOrder: Math.floor(Math.random() * 10000),
   });
 });
 

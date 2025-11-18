@@ -1,8 +1,8 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
-import { EBirdService } from "@/features/ebird/ebird.service";
-import { DispatcherService } from "@/features/dispatcher/dispatcher.service";
-import { DeliveriesService } from "@/features/deliveries/deliveries.service";
-import { SourcesService } from "@/features/sources/sources.service";
+import { Injectable, Logger, type OnModuleInit } from "@nestjs/common";
+import type { DeliveriesService } from "@/features/deliveries/deliveries.service";
+import type { DispatcherService } from "@/features/dispatcher/dispatcher.service";
+import type { EBirdService } from "@/features/ebird/ebird.service";
+import type { SourcesService } from "@/features/sources/sources.service";
 
 /**
  * Populates DB on startup without triggering any Discord messages.
@@ -20,7 +20,7 @@ export class BootstrapService implements OnModuleInit {
     private readonly ebirdService: EBirdService,
     private readonly dispatcherService: DispatcherService,
     private readonly deliveries: DeliveriesService,
-    private readonly sources: SourcesService
+    private readonly sources: SourcesService,
   ) {}
 
   /**
@@ -49,12 +49,12 @@ export class BootstrapService implements OnModuleInit {
           clearInterval(checkInterval);
           if (!this.bootstrapComplete) {
             this.logger.warn(
-              "Bootstrap did not complete within timeout, rejecting attempt"
+              "Bootstrap did not complete within timeout, rejecting attempt",
             );
           }
           reject();
         },
-        5 * 60 * 1000
+        5 * 60 * 1000,
       );
     });
 
@@ -92,7 +92,7 @@ export class BootstrapService implements OnModuleInit {
     this.logger.log("Marking existing eBird observations as delivered...");
     const observations =
       await this.dispatcherService.getUndeliveredObservationsSinceDate(
-        this.initDate
+        this.initDate,
       );
 
     const deliveryValues: {
@@ -103,8 +103,8 @@ export class BootstrapService implements OnModuleInit {
 
     for (const obs of observations) {
       deliveryValues.push({
-        alertKind: "ebird",
         alertId: `${obs.speciesCode}:${obs.subId}`,
+        alertKind: "ebird",
         channelId: obs.channelId,
       });
     }
@@ -112,7 +112,7 @@ export class BootstrapService implements OnModuleInit {
     await this.deliveries.recordDeliveries(deliveryValues);
 
     this.logger.log(
-      `Marked ${deliveryValues.length} deliveries as sent (bootstrap mode).`
+      `Marked ${deliveryValues.length} deliveries as sent (bootstrap mode).`,
     );
   }
 }

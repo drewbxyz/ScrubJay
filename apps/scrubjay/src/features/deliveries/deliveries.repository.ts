@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { DrizzleService } from "@/core/drizzle/drizzle.service";
+import { and, eq, sql } from "drizzle-orm";
 import { deliveries } from "@/core/drizzle/drizzle.schema";
-import { eq, and, sql } from "drizzle-orm";
+import type { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 type AlertKind = "ebird";
 
@@ -14,7 +14,7 @@ export class DeliveriesRepository {
       where: and(
         eq(deliveries.alertId, alertId),
         eq(deliveries.kind, alertKind),
-        eq(deliveries.channelId, channelId)
+        eq(deliveries.channelId, channelId),
       ),
     });
     return !!existing;
@@ -23,15 +23,15 @@ export class DeliveriesRepository {
   async markDelivered(
     alertKind: AlertKind,
     alertId: string,
-    channelId: string
+    channelId: string,
   ) {
     try {
       return await this.drizzle.db
         .insert(deliveries)
         .values({
-          kind: alertKind,
           alertId,
           channelId,
+          kind: alertKind,
         })
         .onConflictDoNothing();
     } catch (err) {
@@ -44,14 +44,14 @@ export class DeliveriesRepository {
       alertKind: AlertKind;
       alertId: string;
       channelId: string;
-    }[]
+    }[],
   ) {
     const batchSize = 100;
     for (let i = 0; i < alerts.length; i += batchSize) {
       const batch = alerts.slice(i, i + batchSize).map((alert) => ({
-        kind: alert.alertKind,
         alertId: alert.alertId,
         channelId: alert.channelId,
+        kind: alert.alertKind,
       }));
       await this.drizzle.db
         .insert(deliveries)
@@ -71,7 +71,7 @@ export class DeliveriesRepository {
     await this.drizzle.db
       .delete(deliveries)
       .where(
-        sql`${deliveries.sentAt} < NOW() - make_interval(days => ${days})`
+        sql`${deliveries.sentAt} < NOW() - make_interval(days => ${days})`,
       );
   }
 }

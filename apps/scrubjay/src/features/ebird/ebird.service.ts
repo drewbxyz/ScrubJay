@@ -1,8 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { EBirdFetcher } from "./ebird.fetcher";
-import { EBirdTransformer } from "./ebird.transformer";
-import { EBirdRepository } from "./ebird.repository";
+import type { EBirdFetcher } from "./ebird.fetcher";
+import type { EBirdRepository } from "./ebird.repository";
 import type { TransformedEBirdObservation } from "./ebird.schema";
+import type { EBirdTransformer } from "./ebird.transformer";
 
 @Injectable()
 export class EBirdService {
@@ -11,14 +11,14 @@ export class EBirdService {
   constructor(
     private readonly fetcher: EBirdFetcher,
     private readonly transformer: EBirdTransformer,
-    private readonly repo: EBirdRepository
+    private readonly repo: EBirdRepository,
   ) {}
 
   async ingestRegion(regionCode: string) {
     const rawObservations =
       await this.fetcher.fetchRareObservations(regionCode);
     this.logger.log(
-      `Fetched ${rawObservations.length} records from ${regionCode}`
+      `Fetched ${rawObservations.length} records from ${regionCode}`,
     );
 
     const transformedObservations =
@@ -31,7 +31,7 @@ export class EBirdService {
         insertedCount++;
       } catch (err) {
         this.logger.warn(
-          `Failed to insert observation: ${obs.speciesCode}:${obs.subId}`
+          `Failed to insert observation: ${obs.speciesCode}:${obs.subId}`,
         );
       }
     }
