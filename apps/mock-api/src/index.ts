@@ -74,7 +74,7 @@ const authenticateApiKey = (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const apiKey = req.headers["x-ebirdapikey"] as string;
+  const apiKey = req.headers["x-ebirdapitoken"] as string;
 
   console.log("apiKey", apiKey);
 
