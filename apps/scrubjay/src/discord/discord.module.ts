@@ -7,6 +7,7 @@ import {
   ReactionRouter,
 } from "./reaction-router/reaction-router.service";
 import { FiltersAddHandler } from "@/features/filters/handlers/filters-add.handler";
+import { ReactionListener } from "./listeners/reaction.listener";
 
 @Module({
   imports: [DrizzleModule, FiltersModule],
@@ -18,6 +19,7 @@ import { FiltersAddHandler } from "@/features/filters/handlers/filters-add.handl
       useFactory: (filterAdd: FiltersAddHandler) => [filterAdd],
       inject: [FiltersAddHandler],
     },
+    ReactionListener,
   ],
   exports: [DiscordHelper],
 })
