@@ -1,8 +1,8 @@
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
-import { EBirdService } from "@/modules/ebird/ebird.service";
-import { DispatcherService } from "@/modules/dispatcher/dispatcher.service";
-import { DeliveriesService } from "@/modules/deliveries/deliveries.service";
-import { SourcesService } from "@/modules/sources/sources.service";
+import { EBirdService } from "@/features/ebird/ebird.service";
+import { DispatcherService } from "@/features/dispatcher/dispatcher.service";
+import { DeliveriesService } from "@/features/deliveries/deliveries.service";
+import { SourcesService } from "@/features/sources/sources.service";
 
 /**
  * Populates DB on startup without triggering any Discord messages.

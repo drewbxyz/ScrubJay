@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
-import { DispatcherService } from "@/modules/dispatcher/dispatcher.service";
+import { DispatcherService } from "@/features/dispatcher/dispatcher.service";
 import { BootstrapService } from "./bootstrap.service";
 
 @Injectable()
