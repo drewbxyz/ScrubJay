@@ -1,24 +1,26 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { ReactionExplorer } from "./reaction-explorer.service";
 import type {
   ReactionHandler,
   ReactionHandlerPayload,
-} from "./reaction-handler";
-
-export const REACTION_HANDLERS = Symbol("REACTION_HANDLERS");
+} from "./reaction-handler.interface";
 
 @Injectable()
-export class ReactionRouter {
-  constructor(
-    @Inject(REACTION_HANDLERS)
-    private readonly handlers: ReactionHandler[],
-  ) {}
+export class ReactionRouter implements OnModuleInit {
+  private handlers: ReactionHandler[] = [];
 
-  async handle(payload: ReactionHandlerPayload) {
+  constructor(private readonly explorer: ReactionExplorer) {}
+
+  onModuleInit(): void {
+    this.handlers = this.explorer.explore();
+  }
+
+  async route(payload: ReactionHandlerPayload) {
     const emojiName = payload.reaction.emoji.name;
     if (!emojiName) return;
-    for (const handler of this.handlers) {
-      if (handler.supports(emojiName)) {
-        return handler.execute(payload);
+    for (const entry of this.handlers) {
+      if (entry.supports(emojiName)) {
+        return entry.execute(payload);
       }
     }
   }

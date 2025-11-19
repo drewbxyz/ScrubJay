@@ -6,6 +6,7 @@ import * as Joi from "joi";
 import { NecordModule } from "necord";
 import { JobsModule } from "@/features/jobs/jobs.module";
 import { DrizzleModule } from "./core/drizzle/drizzle.module";
+import { DiscordModule } from "./discord/discord.module";
 
 const configSchema = Joi.object({
   DEVELOPMENT_SERVER: Joi.string().optional(),
@@ -39,6 +40,7 @@ const configSchema = Joi.object({
         token: configService.getOrThrow<string>("DISCORD_TOKEN"),
       }),
     }),
+    DiscordModule,
     JobsModule,
   ],
   providers: [],

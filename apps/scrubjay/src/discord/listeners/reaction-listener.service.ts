@@ -4,8 +4,8 @@ import { Context, type ContextOf, On } from "necord";
 import { ReactionRouter } from "../reaction-router/reaction-router.service";
 
 @Injectable()
-export class ReactionListener {
-  private readonly logger = new Logger(ReactionListener.name);
+export class ReactionListenerService {
+  private readonly logger = new Logger(ReactionListenerService.name);
   constructor(private readonly reactionRouter: ReactionRouter) {}
 
   @On(Events.MessageReactionAdd)
@@ -24,7 +24,7 @@ export class ReactionListener {
     }
 
     try {
-      await this.reactionRouter.handle({
+      await this.reactionRouter.route({
         reaction,
         user,
       });

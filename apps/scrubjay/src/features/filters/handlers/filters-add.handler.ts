@@ -1,13 +1,15 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
+import { Reaction } from "@/discord/reaction-router/reaction.decorator";
 import {
   ReactionHandler,
   ReactionHandlerPayload,
-} from "@/discord/reaction-router/reaction-handler";
+} from "@/discord/reaction-router/reaction-handler.interface";
 import { FiltersService } from "../filters.service";
 
-@Injectable()
+@Reaction()
 export class FiltersAddHandler implements ReactionHandler {
   private readonly logger = new Logger(FiltersAddHandler.name);
+
   constructor(private readonly filters: FiltersService) {}
 
   supports(emoji: string): boolean {
