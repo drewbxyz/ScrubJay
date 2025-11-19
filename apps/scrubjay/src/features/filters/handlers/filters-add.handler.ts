@@ -20,9 +20,10 @@ export class FiltersAddHandler implements ReactionHandler {
     return title.split(" - ")[0];
   }
 
-  async execute({ reaction }: ReactionHandlerPayload): Promise<void> {
+  async execute({ reaction }: ReactionHandlerPayload) {
     if (reaction.count < 3) {
       this.logger.debug("Filter vote added, but count is below threshold");
+      return;
     }
 
     const message = reaction.message;
