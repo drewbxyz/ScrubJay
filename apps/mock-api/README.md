@@ -1,9 +1,12 @@
-# eBird Mock API
+# Mock API
 
-A comprehensive mock implementation of the eBird API v2 for development and testing purposes. This mock API closely mirrors the real eBird API structure, endpoints, and response formats.
+A comprehensive mock API for development and testing purposes. This includes:
+- **eBird API v2**: Mock implementation that closely mirrors the real eBird API structure, endpoints, and response formats
+- **RSS Feeds**: Mock RSS feeds for birding news and updates
 
 ## Features
 
+### eBird API
 - **Authentication**: API key validation (simulates eBird's authentication)
 - **Rate Limiting**: 10,000 requests per day per API key (matches eBird limits)
 - **Comprehensive Endpoints**: All major eBird API v2 endpoints
@@ -11,6 +14,11 @@ A comprehensive mock implementation of the eBird API v2 for development and test
 - **Geographic Support**: California region with hotspots and realistic coordinates
 - **Query Parameters**: Full support for eBird API query parameters
 - **Error Handling**: Proper HTTP status codes and error responses
+
+### RSS Feeds
+- **Mock Birding News**: Realistic RSS feed with birding articles and updates
+- **Standard RSS 2.0 Format**: Compatible with all RSS readers and parsers
+- **Dynamic Content**: Generates fresh articles with proper dates and metadata
 
 ## Available API Keys
 
@@ -36,6 +44,11 @@ For development and testing, use one of these API keys:
 
 - `GET /v2/ref/hotspot/{regionCode}` - Hotspots in a region
 - `GET /v2/ref/species/info/{speciesCode}` - Species information
+
+### RSS Feeds
+
+- `GET /rss` - List all available RSS feeds
+- `GET /rss/{feedId}` - Get specific RSS feed (returns RSS XML)
 
 ### Utility
 
@@ -85,6 +98,20 @@ curl -H "X-eBirdApiKey: test-api-key" \
 curl -H "X-eBirdApiKey: test-api-key" \
   "http://localhost:8080/v2/ref/hotspot/US-CA"
 ```
+
+### List available RSS feeds
+
+```bash
+curl "http://localhost:8080/rss"
+```
+
+### Get RSS feed
+
+```bash
+curl "http://localhost:8080/rss/birding-news"
+```
+
+The RSS feed returns standard RSS 2.0 XML format with birding news articles, suitable for testing RSS ingestion functionality.
 
 ## Response Format
 
@@ -169,4 +196,21 @@ The API implements the same rate limiting as the real eBird API:
 
 ## Authentication
 
-All API endpoints require the `X-eBirdApiKey` header with a valid API key. This matches the real eBird API authentication method.
+All eBird API endpoints (`/v2/*`) require the `X-eBirdApiKey` header with a valid API key. This matches the real eBird API authentication method.
+
+RSS feed endpoints (`/rss/*`) do not require authentication.
+
+## Project Structure
+
+The application is organized into modular components:
+
+```
+src/
+├── data/           # Static data (species, regions, hotspots)
+├── middleware/     # Express middleware (auth, rate limiting)
+├── routes/         # Route handlers (ebird, rss)
+├── services/       # Business logic (RSS generation)
+└── index.ts        # Application entry point
+```
+
+This structure makes it easy to add new features, endpoints, or data sources.

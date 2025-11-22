@@ -14,7 +14,7 @@ export class RssIngestJob {
     private readonly sourcesService: SourcesService,
   ) {}
 
-  @Cron("*/1 * * * *")
+  @Cron("*/5 * * * *")
   async run() {
     // Wait for bootstrap to complete before running
     await this.bootstrapService.waitForBootstrap();

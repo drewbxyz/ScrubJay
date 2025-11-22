@@ -21,21 +21,31 @@ export class RssDispatcherService implements Dispatcher<DispatchableRssItem[]> {
   }
 
   private async sendRssAlert(channelId: string, rssItem: DispatchableRssItem) {
-    const embed = new EmbedBuilder()
-      .setTitle(rssItem.title || "Untitled")
-      .setColor(0x3498db);
+    const embed = new EmbedBuilder().setColor(0x3498db);
+
+    if (rssItem.sourceName) {
+      embed.setTitle(rssItem.sourceName);
+    }
+
+    if (rssItem.title) {
+      embed.setDescription(rssItem.title);
+    }
 
     if (rssItem.link) {
       embed.setURL(rssItem.link);
     }
 
     if (rssItem.description) {
-      // Truncate description to 4096 characters (Discord embed limit)
-      const description =
-        rssItem.description.length > 4096
-          ? `${rssItem.description.substring(0, 4093)}...`
-          : rssItem.description;
-      embed.setDescription(description);
+      let description = rssItem.description;
+      if (description.length > 2000) {
+        description = `${description.substring(0, 2000)}...`;
+        if (rssItem.link) {
+          description += `\n\n[Read more](${rssItem.link})`;
+        }
+      } else {
+        description = description.substring(0, 2000);
+      }
+      embed.addFields({ name: "Description", value: description });
     }
 
     if (rssItem.publishedAt) {

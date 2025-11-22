@@ -8,6 +8,7 @@ import {
   locations,
   observations,
   rssItems,
+  rssSources,
 } from "@/core/drizzle/drizzle.schema";
 import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
@@ -102,6 +103,7 @@ export class DispatcherRepository {
         id: rssItems.id,
         link: rssItems.link,
         publishedAt: rssItems.publishedAt,
+        sourceName: rssSources.name,
         title: rssItems.title,
       })
       .from(rssItems)
@@ -117,6 +119,7 @@ export class DispatcherRepository {
           eq(deliveries.channelId, channelRssSubscriptions.channelId),
         ),
       )
+      .leftJoin(rssSources, and(eq(rssSources.id, rssItems.sourceId)))
       .where(
         and(
           isNull(deliveries.alertId),
