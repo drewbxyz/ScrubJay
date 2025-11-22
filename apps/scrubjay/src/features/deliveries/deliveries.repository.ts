@@ -3,7 +3,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { deliveries } from "@/core/drizzle/drizzle.schema";
 import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
-type AlertKind = "ebird";
+type AlertKind = "ebird" | "rss";
 
 @Injectable()
 export class DeliveriesRepository {

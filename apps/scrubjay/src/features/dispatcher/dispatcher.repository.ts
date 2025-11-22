@@ -2,10 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { and, eq, gt, isNull, or, sql } from "drizzle-orm";
 import {
   channelEBirdSubscriptions,
+  channelRssSubscriptions,
   deliveries,
   filteredSpecies,
   locations,
   observations,
+  rssItems,
 } from "@/core/drizzle/drizzle.schema";
 import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
@@ -87,6 +89,33 @@ export class DispatcherRepository {
           since ? gt(observations.createdAt, since) : undefined,
           isNull(filteredSpecies.channelId),
           isNull(deliveries.alertId),
+        ),
+      );
+  }
+
+  async getUndeliveredRssItemsSinceDate(since?: Date) {
+    return this.drizzle.db
+      .select({
+        channelId: channelRssSubscriptions.channelId,
+        id: rssItems.id,
+      })
+      .from(rssItems)
+      .innerJoin(
+        channelRssSubscriptions,
+        and(eq(channelRssSubscriptions.active, true)),
+      )
+      .leftJoin(
+        deliveries,
+        and(
+          eq(deliveries.kind, "rss"),
+          eq(deliveries.alertId, rssItems.id),
+          eq(deliveries.channelId, channelRssSubscriptions.channelId),
+        ),
+      )
+      .where(
+        and(
+          isNull(deliveries.alertId),
+          since ? gt(rssItems.createdAt, since) : undefined,
         ),
       );
   }

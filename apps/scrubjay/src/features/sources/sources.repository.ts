@@ -1,5 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { channelEBirdSubscriptions } from "@/core/drizzle/drizzle.schema";
+import {
+  channelEBirdSubscriptions,
+  rssSources,
+} from "@/core/drizzle/drizzle.schema";
 import { DrizzleService } from "@/core/drizzle/drizzle.service";
 
 @Injectable()
@@ -14,5 +17,9 @@ export class SourcesRepository {
       .from(channelEBirdSubscriptions);
 
     return vals.map((row) => row.stateCode);
+  }
+
+  async getRssSources() {
+    return await this.drizzle.db.select().from(rssSources);
   }
 }

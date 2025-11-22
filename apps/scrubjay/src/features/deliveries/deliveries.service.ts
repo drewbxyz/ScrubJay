@@ -6,7 +6,7 @@ export class DeliveriesService {
   constructor(private readonly repo: DeliveriesRepository) {}
 
   async ensureNotDelivered(
-    alertKind: "ebird",
+    alertKind: "ebird" | "rss",
     alertId: string,
     channelId: string,
   ) {
@@ -21,12 +21,20 @@ export class DeliveriesService {
     return true;
   }
 
-  async recordDelivery(alertKind: "ebird", alertId: string, channelId: string) {
+  async recordDelivery(
+    alertKind: "ebird" | "rss",
+    alertId: string,
+    channelId: string,
+  ) {
     await this.repo.markDelivered(alertKind, alertId, channelId);
   }
 
   async recordDeliveries(
-    alerts: { alertKind: "ebird"; alertId: string; channelId: string }[],
+    alerts: {
+      alertKind: "ebird" | "rss";
+      alertId: string;
+      channelId: string;
+    }[],
   ) {
     await this.repo.markDeliveredBulk(alerts);
   }

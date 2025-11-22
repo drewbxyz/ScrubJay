@@ -3,6 +3,7 @@ import { DeliveriesService } from "@/features/deliveries/deliveries.service";
 import { DispatcherService } from "@/features/dispatcher/dispatcher.service";
 import { EBirdService } from "@/features/ebird/ebird.service";
 import { SourcesService } from "@/features/sources/sources.service";
+import { RssService } from "../rss/rss.service";
 
 /**
  * Populates DB on startup without triggering any Discord messages.
@@ -18,6 +19,7 @@ export class BootstrapService implements OnModuleInit {
 
   constructor(
     private readonly ebirdService: EBirdService,
+    private readonly rssService: RssService,
     private readonly dispatcherService: DispatcherService,
     private readonly deliveries: DeliveriesService,
     private readonly sources: SourcesService,
@@ -65,6 +67,7 @@ export class BootstrapService implements OnModuleInit {
     this.logger.log("Running startup population job...");
 
     const regions = await this.sources.getEBirdSources();
+    const rssSources = await this.sources.getRssSources();
 
     try {
       for (const region of regions) {
@@ -77,6 +80,20 @@ export class BootstrapService implements OnModuleInit {
       }
 
       await this.markExistingEBirdObservationsAsDelivered();
+
+      for (const rssSource of rssSources) {
+        try {
+          const count = await this.rssService.ingestRssSource(rssSource);
+          this.logger.log(
+            `Populated ${count} observations for ${rssSource.name}`,
+          );
+        } catch (err) {
+          this.logger.error(`Population failed for ${rssSource.name}: ${err}`);
+        }
+      }
+
+      await this.markExistingRssItemsAsDelivered();
+
       this.logger.log("Startup population complete.");
     } finally {
       // Always mark bootstrap as complete, even if there were errors
@@ -91,9 +108,7 @@ export class BootstrapService implements OnModuleInit {
   private async markExistingEBirdObservationsAsDelivered() {
     this.logger.log("Marking existing eBird observations as delivered...");
     const observations =
-      await this.dispatcherService.getUndeliveredObservationsSinceDate(
-        this.initDate,
-      );
+      await this.dispatcherService.getUndeliveredObservationsSinceDate();
 
     const deliveryValues: {
       alertKind: "ebird";
@@ -114,5 +129,26 @@ export class BootstrapService implements OnModuleInit {
     this.logger.log(
       `Marked ${deliveryValues.length} deliveries as sent (bootstrap mode).`,
     );
+  }
+
+  private async markExistingRssItemsAsDelivered() {
+    this.logger.log("Marking existing RSS items as delivered...");
+    const rssItems = await this.dispatcherService.getUndeliveredRssSinceDate();
+
+    const deliveryValues: {
+      alertKind: "rss";
+      alertId: string;
+      channelId: string;
+    }[] = [];
+
+    for (const rssItem of rssItems) {
+      deliveryValues.push({
+        alertId: rssItem.id,
+        alertKind: "rss",
+        channelId: rssItem.channelId,
+      });
+    }
+
+    await this.deliveries.recordDeliveries(deliveryValues);
   }
 }
