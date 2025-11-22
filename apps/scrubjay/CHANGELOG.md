@@ -1,5 +1,11 @@
 # scrubjay
 
+## 0.1.2
+
+### Patch Changes
+
+- a0d7e1f: update configuration
+
 ## 0.1.1
 
 ### Patch Changes
