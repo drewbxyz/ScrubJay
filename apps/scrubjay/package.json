@@ -64,10 +64,7 @@
     }
   },
   "license": "UNLICENSED",
-  "name": "@${{ github.repository_owner }}/scrubjay",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
+  "name": "scrubjay",
   "private": true,
   "scripts": {
     "build": "nest build",
