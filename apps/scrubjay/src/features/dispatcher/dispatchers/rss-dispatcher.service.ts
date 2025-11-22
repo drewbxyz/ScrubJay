@@ -37,13 +37,19 @@ export class RssDispatcherService implements Dispatcher<DispatchableRssItem[]> {
 
     if (rssItem.description) {
       let description = rssItem.description;
-      if (description.length > 2000) {
-        description = `${description.substring(0, 2000)}...`;
-        if (rssItem.link) {
-          description += `\n\n[Read more](${rssItem.link})`;
-        }
+      const maxLength = 1024; // Discord embed field value max length
+
+      if (description.length > maxLength) {
+        // Reserve space for "Read more" link if available
+        const readMoreText = rssItem.link
+          ? `\n\n[Read more](${rssItem.link})`
+          : "";
+        const reservedLength = readMoreText.length;
+        const truncateLength = maxLength - reservedLength - 3; // -3 for "..."
+
+        description = `${description.substring(0, truncateLength)}...${readMoreText}`;
       } else {
-        description = description.substring(0, 2000);
+        description = description.substring(0, maxLength);
       }
       embed.addFields({ name: "Description", value: description });
     }
