@@ -1,5 +1,11 @@
 # scrubjay
 
+## 0.1.7
+
+### Patch Changes
+
+- e0be080: fix max length for rss description
+
 ## 0.1.6
 
 ### Patch Changes
