@@ -1,5 +1,0 @@
----
-"scrubjay": patch
----
-
-update readme

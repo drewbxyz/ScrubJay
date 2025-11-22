@@ -1,5 +1,11 @@
 # scrubjay
 
+## 0.1.4
+
+### Patch Changes
+
+- de75388: update readme
+
 ## 0.1.3
 
 ### Patch Changes
