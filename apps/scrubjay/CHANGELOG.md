@@ -1,5 +1,11 @@
 # scrubjay
 
+## 0.1.6
+
+### Patch Changes
+
+- a73f4b5: fix issue where channel rss subscriptions to sources were ignored
+
 ## 0.1.5
 
 ### Patch Changes
