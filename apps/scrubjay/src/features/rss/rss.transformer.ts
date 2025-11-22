@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+import * as crypto from "node:crypto";
 import { Injectable } from "@nestjs/common";
 import * as Parser from "rss-parser";
 import type { NormalizedRssItem } from "./rss.schema";
