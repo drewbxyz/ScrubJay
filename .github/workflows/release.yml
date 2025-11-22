@@ -35,5 +35,7 @@ jobs:
 
       - name: Create release pull request
         uses: changesets/action@v1
+        with:
+          createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
