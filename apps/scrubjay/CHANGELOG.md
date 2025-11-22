@@ -1,5 +1,11 @@
 # scrubjay
 
+## 0.1.3
+
+### Patch Changes
+
+- 1683bd1: update scrubjay package name
+
 ## 0.1.2
 
 ### Patch Changes
