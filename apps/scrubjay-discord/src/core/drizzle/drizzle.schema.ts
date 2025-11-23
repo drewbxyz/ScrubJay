@@ -136,14 +136,18 @@ export const rssSources = pgTable("rss_sources", {
   url: text("url").notNull(),
 });
 
-export const channelRssSubscriptions = pgTable("channel_rss_subscriptions", {
-  active: boolean("active").notNull().default(true),
-  channelId: text("channel_id").notNull(),
-  sourceId: text("id").references(() => rssSources.id, {
-    onDelete: "cascade",
-    onUpdate: "cascade",
-  }),
-});
+export const channelRssSubscriptions = pgTable(
+  "channel_rss_subscriptions",
+  {
+    active: boolean("active").notNull().default(true),
+    channelId: text("channel_id").notNull(),
+    sourceId: text("id").references(() => rssSources.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  },
+  (t) => [primaryKey({ columns: [t.channelId, t.sourceId] })],
+);
 
 export const deliveries = pgTable(
   "deliveries",
