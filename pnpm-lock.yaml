@@ -19,31 +19,6 @@ importers:
         specifier: ^2.6.1
         version: 2.6.1
 
-  apps/mock-api:
-    dependencies:
-      express:
-        specifier: ^4.21.2
-        version: 4.21.2
-      moment:
-        specifier: ^2.30.1
-        version: 2.30.1
-      moment-timezone:
-        specifier: ^0.5.48
-        version: 0.5.48
-    devDependencies:
-      '@scrubjay/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
-      '@types/express':
-        specifier: ^5.0.5
-        version: 5.0.5
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(@swc/core@1.15.2)(tsx@4.20.6)(typescript@5.9.3)
-      tsx:
-        specifier: ^4.20.6
-        version: 4.20.6
-
   apps/scrubjay-discord:
     dependencies:
       '@nestjs/common':
@@ -161,6 +136,31 @@ importers:
       typescript-eslint:
         specifier: ^8.47.0
         version: 8.47.0(eslint@9.38.0)(typescript@5.9.3)
+
+  apps/test-api:
+    dependencies:
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
+      moment-timezone:
+        specifier: ^0.5.48
+        version: 0.5.48
+    devDependencies:
+      '@scrubjay/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/express':
+        specifier: ^5.0.5
+        version: 5.0.5
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(@swc/core@1.15.2)(tsx@4.20.6)(typescript@5.9.3)
+      tsx:
+        specifier: ^4.20.6
+        version: 4.20.6
 
   packages/typescript-config: {}
 
