@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateApiKey, getApiKeys } from "./middleware/auth";
+import { authenticateApiKey } from "./middleware/auth";
 import { rateLimit } from "./middleware/rate-limit";
 import { createEbirdRoutes } from "./routes/ebird.routes";
 import { createRssRoutes } from "./routes/rss.routes";
