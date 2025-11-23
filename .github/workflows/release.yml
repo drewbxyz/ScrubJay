@@ -36,8 +36,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@${{ github.repository_owner }}"
 
       - name: Install dependencies
         run: pnpm install
