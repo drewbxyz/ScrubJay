@@ -1,5 +1,15 @@
 # scrubjay-discord
 
+## 0.2.0
+
+### Minor Changes
+
+- 9839690: create command to add subscriptions
+
+### Patch Changes
+
+- 382f0ca: update status text to read "looking for birds..."
+
 ## 0.1.8
 
 ### Patch Changes
