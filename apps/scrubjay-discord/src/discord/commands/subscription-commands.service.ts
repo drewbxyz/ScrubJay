@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { PermissionsBitField } from "discord.js";
+import { MessageFlags, PermissionsBitField } from "discord.js";
 import {
   Context,
   Options,
@@ -23,12 +23,20 @@ export class SubscriptionCommands {
     @Options() options: SubscribeEBirdCommandDto,
   ) {
     const { region } = options;
-    await this.subscriptionsService.subscribeToEBird(
-      interaction.channelId,
-      region,
-    );
-    return interaction.reply({
-      content: `Subscribed to eBird observations for ${region}.`,
-    });
+    try {
+      await this.subscriptionsService.subscribeToEBird(
+        interaction.channelId,
+        region,
+      );
+      return interaction.reply({
+        content: `Subscribed to eBird observations for ${region}.`,
+        flags: [MessageFlags.Ephemeral],
+      });
+    } catch (error) {
+      return interaction.reply({
+        content: `Failed to subscribe to eBird: ${error}`,
+        flags: [MessageFlags.Ephemeral],
+      });
+    }
   }
 }
