@@ -52,6 +52,4 @@ app.use((_req: express.Request, res: express.Response) => {
 
 app.listen(PORT, () => {
   console.log(`Mock API Server is running on http://localhost:${PORT}`);
-  console.log(`Available API keys: ${getApiKeys().join(", ")}`);
-  console.log(`RSS feeds available at: http://localhost:${PORT}/rss`);
 });
