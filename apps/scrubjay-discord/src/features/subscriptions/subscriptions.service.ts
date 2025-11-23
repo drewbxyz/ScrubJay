@@ -31,7 +31,7 @@ export class SubscriptionsService {
       stateCode = parsed.stateCode;
     } catch (err) {
       this.logger.error(`Invalid region code: ${regionCode}: ${err}`);
-      return;
+      throw new Error(`Invalid region code: ${regionCode}`);
     }
     try {
       await this.repo.insertEBirdSubscription({
@@ -41,7 +41,7 @@ export class SubscriptionsService {
       });
     } catch (err) {
       this.logger.error(`Failed to subscribe to eBird: ${err}`);
-      return;
+      throw new Error(`Failed to subscribe to eBird: ${err}`);
     }
   }
 }
