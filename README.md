@@ -12,7 +12,7 @@ ScrubJay is a NestJS-powered Discord bot built for the California Birding commun
 ## Repository layout
 
 - `apps/scrubjay` - Discord bot service (NestJS, Necord, Drizzle, discord.js).
-- `apps/mock-api` - Mock eBird API for local development and tests.
+- `apps/test-api` - Mock eBird API for local development and tests.
 - `packages/typescript-config` - Shared TypeScript config.
 - `docker-compose.yaml` - Postgres 17 for local use.
 
@@ -21,7 +21,7 @@ ScrubJay is a NestJS-powered Discord bot built for the California Birding commun
 - Node.js 24 (see `.nvmrc`) and pnpm 10.
 - Postgres 17 running locally (`docker compose up -d postgres`).
 - Discord application with a bot token and client ID.
-- eBird API token. Point the bot at `apps/mock-api` if you want to avoid the live API.
+- eBird API token. Point the bot at `apps/test-api` if you want to avoid the live API.
 
 ## Configuration
 
@@ -45,7 +45,7 @@ The bot runs database migrations on startup using the Drizzle files in `apps/scr
 1. Install dependencies: `pnpm install`
 2. Start Postgres: `docker compose up -d postgres`
 3. Start the bot: `pnpm --filter scrubjay dev`
-4. Optional: run the mock API at `localhost:8080` with `pnpm --filter mock-api dev`
+4. Optional: run the mock API at `localhost:8080` with `pnpm --filter test-api dev`
 
 Jobs ingest eBird data every 15 minutes and dispatch grouped alerts every 5 minutes. Bootstrap logic runs on startup to backfill observations without sending Discord messages.
 
