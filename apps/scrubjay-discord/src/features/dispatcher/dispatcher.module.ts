@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { DrizzleModule } from "@/core/drizzle/drizzle.module";
 import { DiscordModule } from "@/discord/discord.module";
 import { DeliveriesModule } from "@/features/deliveries/deliveries.module";
 import { DispatcherRepository } from "./dispatcher.repository";
@@ -9,7 +8,7 @@ import { RssDispatcherService } from "./dispatchers/rss-dispatcher.service";
 
 @Module({
   exports: [DispatcherService],
-  imports: [DrizzleModule, DeliveriesModule, DiscordModule],
+  imports: [DeliveriesModule, DiscordModule],
   providers: [
     DispatcherRepository,
     EBirdDispatcherService,

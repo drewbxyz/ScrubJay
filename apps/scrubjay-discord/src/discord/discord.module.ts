@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { DrizzleModule } from "@/core/drizzle/drizzle.module";
 import { FiltersModule } from "@/features/filters/filters.module";
 import { CommandsModule } from "./commands/commands.module";
 import { DiscordHelper } from "./discord.helper";
@@ -12,8 +11,6 @@ import { ReactionRouterModule } from "./reaction-router/reaction-router.module";
     ReactionRouterModule,
     CommandsModule,
     ListenersModule,
-
-    DrizzleModule,
     FiltersModule,
   ],
   providers: [DiscordHelper],
