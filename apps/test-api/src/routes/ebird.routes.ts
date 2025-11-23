@@ -59,6 +59,7 @@ Object.keys(hotspots).forEach((regionCode) => {
 function generateRandomObservation(
   regionCode: string,
   hotspot?: { locId: string; locName: string; lat: number; lng: number },
+  daysBack: number = 7,
 ): eBirdObservation {
   const region = regions[regionCode as keyof typeof regions];
   const randomSpecies = species[Math.floor(Math.random() * species.length)];
@@ -101,7 +102,7 @@ function generateRandomObservation(
   }
 
   const obsDt = moment()
-    .subtract(Math.floor(Math.random() * 30), "days")
+    .subtract(Math.floor(Math.random() * daysBack), "days")
     .format("YYYY-MM-DD HH:mm:ss");
 
   return {
@@ -150,7 +151,7 @@ export function createEbirdRoutes() {
   const notableObservations: Record<string, eBirdObservation[]> = {};
 
   // Recent observations in a region
-  router.get("/v2/data/obs/:regionCode/recent", (req, res) => {
+  router.get("/data/obs/:regionCode/recent", (req, res) => {
     const { regionCode } = req.params;
     const {
       maxResults = "50",
@@ -194,12 +195,13 @@ export function createEbirdRoutes() {
   });
 
   // Notable observations in a region
-  router.get("/v2/data/obs/:regionCode/recent/notable", (req, res) => {
+  router.get("/data/obs/:regionCode/recent/notable", (req, res) => {
     const { regionCode } = req.params;
     const {
       maxResults = "50",
       includeProvisional = "false",
       hotspot = "false",
+      back = "7",
     } = req.query;
 
     if (!regionCode) {
@@ -217,11 +219,19 @@ export function createEbirdRoutes() {
     );
     const includeProv = includeProvisional === "true";
     const hotspotOnly = hotspot === "true";
+    const daysBack = parseInt(back as string, 10) || 7;
 
-    const existingNotable = notableObservations[regionCode] || [];
+    // Filter existing observations to only include those within the time window
+    const cutoffDate = moment().subtract(daysBack, "days");
+    const existingNotable = (notableObservations[regionCode] || []).filter(
+      (obs) => moment(obs.obsDt).isAfter(cutoffDate),
+    );
+
     const newNotableObservations: eBirdObservation[] = [];
 
-    for (let i = 0; i < Math.min(maxResultsNum, 2); i++) {
+    // Generate more observations (up to 10, or maxResultsNum if less)
+    const numToGenerate = Math.min(maxResultsNum, 10);
+    for (let i = 0; i < numToGenerate; i++) {
       const hotspotData =
         hotspotOnly && hotspots[regionCode]
           ? hotspots[regionCode][
@@ -229,7 +239,7 @@ export function createEbirdRoutes() {
             ]
           : undefined;
 
-      const obs = generateRandomObservation(regionCode, hotspotData);
+      const obs = generateRandomObservation(regionCode, hotspotData, daysBack);
       obs.obsReviewed = true;
       obs.evidence =
         Math.random() > 0.5
@@ -250,7 +260,7 @@ export function createEbirdRoutes() {
   });
 
   // Recent observations for a specific species in a region
-  router.get("/v2/data/obs/:regionCode/recent/:speciesCode", (req, res) => {
+  router.get("/data/obs/:regionCode/recent/:speciesCode", (req, res) => {
     const { regionCode, speciesCode } = req.params;
     const {
       maxResults = "50",
@@ -305,7 +315,7 @@ export function createEbirdRoutes() {
   });
 
   // Hotspots in a region
-  router.get("/v2/ref/hotspot/:regionCode", (req, res) => {
+  router.get("/ref/hotspot/:regionCode", (req, res) => {
     const { regionCode } = req.params;
     const { maxResults = "50" } = req.query;
 
@@ -328,7 +338,7 @@ export function createEbirdRoutes() {
   });
 
   // Species information
-  router.get("/v2/ref/species/info/:speciesCode", (req, res) => {
+  router.get("/ref/species/info/:speciesCode", (req, res) => {
     const { speciesCode } = req.params;
 
     if (!speciesCode) {
@@ -361,7 +371,7 @@ export function createEbirdRoutes() {
   });
 
   // Recent observations by geographic area
-  router.get("/v2/data/obs/geo/recent", (req, res) => {
+  router.get("/data/obs/geo/recent", (req, res) => {
     const {
       lat,
       lng,
@@ -399,7 +409,7 @@ export function createEbirdRoutes() {
   });
 
   // Notable observations by geographic area
-  router.get("/v2/data/obs/geo/recent/notable", (req, res) => {
+  router.get("/data/obs/geo/recent/notable", (req, res) => {
     const {
       lat,
       lng,
