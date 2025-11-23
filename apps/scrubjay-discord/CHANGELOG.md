@@ -1,5 +1,12 @@
 # scrubjay-discord
 
+## 0.1.8
+
+### Patch Changes
+
+- 15df5eb: bugfix: create composite primary key on channelId and sourceId for channelRssSubscriptions table
+- 146fd69: refactor to create a global service for drizzle
+
 ## 0.1.7
 
 ### Patch Changes
