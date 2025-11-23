@@ -1,1 +1,2 @@
+ALTER TABLE "channel_rss_subscriptions" ALTER COLUMN "id" SET NOT NULL;--> statement-breakpoint
 ALTER TABLE "channel_rss_subscriptions" ADD CONSTRAINT "channel_rss_subscriptions_channel_id_id_pk" PRIMARY KEY("channel_id","id");

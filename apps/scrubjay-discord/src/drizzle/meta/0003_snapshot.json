@@ -6,7 +6,7 @@
   },
   "dialect": "postgresql",
   "enums": {},
-  "id": "f8b3b934-4165-4200-be4c-3fe339cd6a6a",
+  "id": "4b4a9bb3-9220-4208-9844-6bde772bed60",
   "policies": {},
   "prevId": "17c6dfd7-1fbd-49dd-827e-0ae2bdfaa669",
   "roles": {},
@@ -130,7 +130,7 @@
         },
         "id": {
           "name": "id",
-          "notNull": false,
+          "notNull": true,
           "primaryKey": false,
           "type": "text"
         }
