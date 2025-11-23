@@ -141,10 +141,12 @@ export const channelRssSubscriptions = pgTable(
   {
     active: boolean("active").notNull().default(true),
     channelId: text("channel_id").notNull(),
-    sourceId: text("id").references(() => rssSources.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
+    sourceId: text("id")
+      .references(() => rssSources.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      })
+      .notNull(),
   },
   (t) => [primaryKey({ columns: [t.channelId, t.sourceId] })],
 );
