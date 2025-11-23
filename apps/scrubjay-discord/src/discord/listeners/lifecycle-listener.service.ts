@@ -6,8 +6,8 @@ import { Context, ContextOf, On } from "necord";
 export class LifecycleListenerService {
   @On(Events.ClientReady)
   async onClientReady(@Context() [client]: ContextOf<Events.ClientReady>) {
-    client.user.setActivity("for birds", {
-      type: ActivityType.Listening,
+    client.user.setActivity("looking for birds...", {
+      type: ActivityType.Custom,
     });
   }
 }
