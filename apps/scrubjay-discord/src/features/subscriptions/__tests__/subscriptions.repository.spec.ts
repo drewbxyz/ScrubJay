@@ -74,9 +74,7 @@ describe("SubscriptionsRepository", () => {
       ],
     }).compile();
 
-    repository = module.get<SubscriptionsRepository>(
-      SubscriptionsRepository,
-    );
+    repository = module.get<SubscriptionsRepository>(SubscriptionsRepository);
     jest.clearAllMocks();
   });
 
@@ -88,8 +86,8 @@ describe("SubscriptionsRepository", () => {
     it("inserts an eBird subscription successfully", async () => {
       const subscription = {
         channelId: "channel-123",
-        stateCode: "US-WA",
         countyCode: "*",
+        stateCode: "US-WA",
       };
 
       await repository.insertEBirdSubscription(subscription);
@@ -103,8 +101,8 @@ describe("SubscriptionsRepository", () => {
     it("creates deliveries for existing undelivered observations", async () => {
       const subscription = {
         channelId: "channel-123",
-        stateCode: "US-WA",
         countyCode: "US-WA-033",
+        stateCode: "US-WA",
       };
 
       const mockObservations = [
@@ -136,8 +134,8 @@ describe("SubscriptionsRepository", () => {
     it("batches deliveries in chunks of 100", async () => {
       const subscription = {
         channelId: "channel-123",
-        stateCode: "US-WA",
         countyCode: "US-WA-033",
+        stateCode: "US-WA",
       };
 
       // Create 250 mock observations
@@ -150,10 +148,6 @@ describe("SubscriptionsRepository", () => {
 
       await repository.insertEBirdSubscription(subscription);
 
-      // Should have 3 batches: 100 + 100 + 50
-      const deliveryInsertCalls = mockTx.insert.mock.calls.filter(
-        (call) => call[0] !== undefined,
-      );
       // We expect at least 3 calls (one for each batch)
       // The exact count depends on implementation, but should be multiple
       expect(mockTx.insert.mock.calls.length).toBeGreaterThan(2);
@@ -162,8 +156,8 @@ describe("SubscriptionsRepository", () => {
     it("handles subscriptions with no existing observations", async () => {
       const subscription = {
         channelId: "channel-123",
-        stateCode: "US-WA",
         countyCode: "*",
+        stateCode: "US-WA",
       };
 
       mockWhere.mockResolvedValue([]);
@@ -178,8 +172,8 @@ describe("SubscriptionsRepository", () => {
     it("handles state-level subscription (countyCode = '*')", async () => {
       const subscription = {
         channelId: "channel-123",
-        stateCode: "US-WA",
         countyCode: "*",
+        stateCode: "US-WA",
       };
 
       await repository.insertEBirdSubscription(subscription);
@@ -192,8 +186,8 @@ describe("SubscriptionsRepository", () => {
     it("handles county-level subscription", async () => {
       const subscription = {
         channelId: "channel-123",
-        stateCode: "US-WA",
         countyCode: "US-WA-033",
+        stateCode: "US-WA",
       };
 
       await repository.insertEBirdSubscription(subscription);
@@ -206,8 +200,8 @@ describe("SubscriptionsRepository", () => {
     it("handles transaction errors", async () => {
       const subscription = {
         channelId: "channel-123",
-        stateCode: "US-WA",
         countyCode: "*",
+        stateCode: "US-WA",
       };
 
       const transactionError = new Error("Transaction failed");
@@ -281,4 +275,3 @@ describe("SubscriptionsRepository", () => {
     });
   });
 });
-

@@ -40,10 +40,17 @@ app.use(createRssRoutes());
 app.use("/v2", authenticateApiKey, rateLimit, createEbirdRoutes());
 
 // Error handling middleware
-app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Internal server error" });
-});
+app.use(
+  (
+    err: Error,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction,
+  ) => {
+    console.error(err.stack);
+    res.status(500).json({ error: "Internal server error" });
+  },
+);
 
 // 404 handler
 app.use((_req: express.Request, res: express.Response) => {
