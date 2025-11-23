@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateApiKey, getApiKeys } from "./middleware/auth";
+import { authenticateApiKey } from "./middleware/auth";
 import { rateLimit } from "./middleware/rate-limit";
 import { createEbirdRoutes } from "./routes/ebird.routes";
 import { createRssRoutes } from "./routes/rss.routes";
@@ -52,6 +52,4 @@ app.use((_req: express.Request, res: express.Response) => {
 
 app.listen(PORT, () => {
   console.log(`Mock API Server is running on http://localhost:${PORT}`);
-  console.log(`Available API keys: ${getApiKeys().join(", ")}`);
-  console.log(`RSS feeds available at: http://localhost:${PORT}/rss`);
 });
