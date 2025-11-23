@@ -1,7 +1,7 @@
 import { Test, type TestingModule } from "@nestjs/testing";
 import type { MessageReaction } from "discord.js";
-import { FiltersAddHandler } from "../handlers/filters-add.handler";
 import { FiltersService } from "../filters.service";
+import { FiltersAddHandler } from "../handlers/filters-add.handler";
 
 describe("FiltersAddHandler", () => {
   let handler: FiltersAddHandler;

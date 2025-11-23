@@ -69,4 +69,3 @@ export const hotspots: Record<string, Hotspot[]> = {
     },
   ],
 };
-

@@ -1,8 +1,11 @@
 import { Test, type TestingModule } from "@nestjs/testing";
 import { EBirdFetcher } from "../ebird.fetcher";
 import { EBirdRepository } from "../ebird.repository";
+import type {
+  EBirdObservation,
+  TransformedEBirdObservation,
+} from "../ebird.schema";
 import { EBirdService } from "../ebird.service";
-import type { EBirdObservation, TransformedEBirdObservation } from "../ebird.schema";
 import { EBirdTransformer } from "../ebird.transformer";
 
 describe("EBirdService", () => {
@@ -36,9 +39,9 @@ describe("EBirdService", () => {
     lastName: "",
     lat: 47.6062,
     lng: -122.3321,
+    locationPrivate: false,
     locId: "loc-1",
     locName: "Lake Union",
-    locationPrivate: false,
     obsDt: "2024-01-01T10:00:00Z",
     obsId: "obs-1",
     obsReviewed: true,
@@ -121,9 +124,9 @@ describe("EBirdService", () => {
       countryName: "United States",
       lat: 47.6062,
       lng: -122.3321,
+      locationPrivate: false,
       locId: "loc-1",
       locName: "Lake Union",
-      locationPrivate: false,
       subnational1Code: "US-WA",
       subnational1Name: "Washington",
       subnational2Code: "US-WA-033",

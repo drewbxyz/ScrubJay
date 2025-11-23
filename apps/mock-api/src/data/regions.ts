@@ -65,4 +65,3 @@ export const regions = {
     timezone: "America/Los_Angeles",
   },
 };
-

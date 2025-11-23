@@ -14,7 +14,7 @@ describe("EBirdFetcher", () => {
       providers: [
         {
           provide: EBirdFetcher,
-          useFactory: () => new EBirdFetcher(configServiceMock as any),
+          useFactory: () => new EBirdFetcher(configServiceMock),
         },
       ],
     }).compile();

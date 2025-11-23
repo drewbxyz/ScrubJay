@@ -5,6 +5,7 @@ import { RssDispatcherService } from "./dispatchers/rss-dispatcher.service";
 
 @Injectable()
 export class DispatcherService {
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: used via bracket notation in getDispatcher
   private readonly dispatchers: Readonly<DispatcherMap>;
 
   constructor(

@@ -23,4 +23,3 @@ export function authenticateApiKey(
 export function getApiKeys(): string[] {
   return Array.from(apiKeys);
 }
-

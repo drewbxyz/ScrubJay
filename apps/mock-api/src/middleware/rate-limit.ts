@@ -24,4 +24,3 @@ export function rateLimit(
   rateLimits[apiKey].count++;
   next();
 }
-

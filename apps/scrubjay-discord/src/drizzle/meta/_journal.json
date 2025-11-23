@@ -9,18 +9,18 @@
       "when": 1763235970223
     },
     {
+      "breakpoints": true,
       "idx": 1,
-      "version": "7",
-      "when": 1763786799547,
       "tag": "0001_watery_hairball",
-      "breakpoints": true
+      "version": "7",
+      "when": 1763786799547
     },
     {
+      "breakpoints": true,
       "idx": 2,
-      "version": "7",
-      "when": 1763787622015,
       "tag": "0002_silky_psylocke",
-      "breakpoints": true
+      "version": "7",
+      "when": 1763787622015
     }
   ],
   "version": "7"

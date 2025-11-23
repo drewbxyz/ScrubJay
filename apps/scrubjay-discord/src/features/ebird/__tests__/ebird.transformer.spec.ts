@@ -1,5 +1,5 @@
-import { EBirdTransformer } from "../ebird.transformer";
 import type { EBirdObservation } from "../ebird.schema";
+import { EBirdTransformer } from "../ebird.transformer";
 
 describe("EBirdTransformer", () => {
   const transformer = new EBirdTransformer();
@@ -17,9 +17,9 @@ describe("EBirdTransformer", () => {
     lastName: "",
     lat: 47.6062,
     lng: -122.3321,
+    locationPrivate: false,
     locId: "loc-1",
     locName: "Lake Union",
-    locationPrivate: false,
     obsDt: "2024-01-01T10:00:00Z",
     obsId: "obs-1",
     obsReviewed: true,
@@ -48,8 +48,8 @@ describe("EBirdTransformer", () => {
         ...baseObservation,
         evidence: "V",
         obsId: "obs-3",
-        subId: "sub-2",
         speciesCode: "mallar",
+        subId: "sub-2",
       },
     ]);
 
@@ -75,9 +75,9 @@ describe("EBirdTransformer", () => {
       countryName: "United States",
       lat: 47.6062,
       lng: -122.3321,
+      locationPrivate: false,
       locId: "loc-1",
       locName: "Lake Union",
-      locationPrivate: false,
       subnational1Code: "US-WA",
       subnational1Name: "Washington",
       subnational2Code: "US-WA-033",
